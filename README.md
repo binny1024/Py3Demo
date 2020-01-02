@@ -8,7 +8,7 @@ pip3 install selenium
 ```
 3,isntall chromedriver
 
-I use chrome ,you you can download a driver depending your browser.
+I use chrome ,you can download a driver depending your browser.
 
 Chromedriver`s version must be same with your chrome browser version in you computer.
 
