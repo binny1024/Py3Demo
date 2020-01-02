@@ -47,7 +47,8 @@ agent_list = [
 
 
 def to_refresh_page(url_list):
-    browser = webdriver.Chrome("../driver/chromedriver_80")
+    # browser = webdriver.Chrome("../driver/chromedriver_80")
+    browser = webdriver.Chrome()
     chrome_options = webdriver.ChromeOptions()
     # 使用headless无界面浏览器模式
     # chrome_options.add_argument('--headless')  # 增加无界面选项
@@ -57,7 +58,7 @@ def to_refresh_page(url_list):
     for url in url_list:
         # browser.get(url)
         # for url in url_list:
-        for i in range(100):
+        for i in range(1000):
             # chromeOptions.add_argument("--proxy-server=http://" + random.choice(proxys))
             # browser = webdriver.Chrome(options=chromeOptions)
             print("i = " + str(i) + "  " + url)
@@ -99,7 +100,7 @@ def get_page_jianshu():
 if __name__ == '__main__':
     # to_refresh_page(get_page_url_blockchainbrother())
     # to_refresh_page(get_page_jianshu())
-    browser = webdriver.Chrome("../driver/chromedriver_80")
+    browser = webdriver.Chrome()
     browser.get("https://www.jianshu.com/u/5f41e5b2d14c")
     # 简书需要上拉才能获取更多文章
     for i in range(3):
