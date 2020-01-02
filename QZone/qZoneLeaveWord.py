@@ -213,8 +213,7 @@ if __name__ == "__main__":
         friend_counts  =  len(qq_num)
         for i in range(0,friend_counts):
             print(friend_name[i]+" "+friend_qq[i]+ " index = "+ str(i))
-            # set_message(friend_name[i], friend_qq[i])
-
+            set_message(friend_name[i], friend_qq[i])
 
     except Exception as e:
         print(traceback.format_exc())
