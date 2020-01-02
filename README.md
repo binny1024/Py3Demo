@@ -32,6 +32,4 @@ Each module is a separate feature, and you can use only one of them.
 ## huya
 In this module, you can use it to grab the live stream information of tiger teeth.
 
-![](https://github.com/binny1024/Py3Utils/blob/master/huya/img/grab_result.jpg)
-![](https://github.com/binny1024/Py3Utils/blob/master/huya/img/live_stream.png)
 
