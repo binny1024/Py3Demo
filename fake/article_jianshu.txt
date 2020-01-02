@@ -1,0 +1,81 @@
+Mac 上 解决 Charles 请求HTTPS协议乱码的问题 https://www.jianshu.com/p/cf1979576221
+Mac 安装 lxml https://www.jianshu.com/p/1c1ee1ed31c8
+编译FFmpeg添加ass等字幕滤镜模块 https://www.jianshu.com/p/9670e2d25681
+FFmpeg滤镜的使用，添加水印 https://www.jianshu.com/p/a09f6934cd84
+智能合约四：完整的项目1 https://www.jianshu.com/p/0e4efed37c1c
+智能合约三：访问权限 https://www.jianshu.com/p/63e095975c08
+智能合约二：数据类型 https://www.jianshu.com/p/13db36b70dd0
+智能合约一：简单的案例 https://www.jianshu.com/p/3caaf37a55f0
+truffle项目搭建 https://www.jianshu.com/p/f5596ca2836d
+cnpm安装ganache客户端 https://www.jianshu.com/p/23db86deb83b
+在虚拟机上安装Ubuntu server并开启SSH服务 https://www.jianshu.com/p/79d8debc9026
+Promise https://www.jianshu.com/p/90e67d937040
+区块链几个相关概念简述 https://www.jianshu.com/p/5ec44e88aad9
+Gradle 配置阿里云仓库 https://www.jianshu.com/p/6224e896c7f7
+C++ 重载 [] = == != https://www.jianshu.com/p/e1aed6a6c769
+通过Gradle配置同一应用不同的ApplicationID，不同的资源(名字、图标） https://www.jianshu.com/p/47ec5a4c38db
+原码、反码、补码 https://www.jianshu.com/p/94b239bedb84
+运算符重载定义与友元函数 https://www.jianshu.com/p/847b514d36ee
+C++中 对象的赋值与复制 https://www.jianshu.com/p/860f38f7e84f
+仿 薄荷健康APP 的尺子 https://www.jianshu.com/p/66be7e3c5208
+一行代码实现TextView的“展开”和“收起” https://www.jianshu.com/p/083415ee8593
+搭建一个Android-Gradle API学习项目 https://www.jianshu.com/p/214ed0bfccbf
+mac动态链接库的生成和使用 https://www.jianshu.com/p/246e015f00d1
+JNI的静态注册和动态注册，及输出乱码解决 https://www.jianshu.com/p/dfc22c5e720a
+以太坊账户 https://www.jianshu.com/p/b2fce2a46795
+geth客户端搭建及智能合约的部署 https://www.jianshu.com/p/7c30d12bb0b5
+GCC编译 https://www.jianshu.com/p/b4c3e80269a6
+c语言多维数组 https://www.jianshu.com/p/5bc5b348f38c
+Activity与Fragment的交互时生命周期流程 https://www.jianshu.com/p/5fcab3e4af16
+TCP报文结构和功能简析 https://www.jianshu.com/p/7b83a0070588
+部署USDT节点可行操作 https://www.jianshu.com/p/920aed2cc0fb
+AndroidStudio升级到3.5后连接真机调试失败INSTALL_PARSE_FAILED_NO_CERTIFICATES https://www.jianshu.com/p/8217c8d987f1
+ViewPager+Fragment预加载和懒加载分析 https://www.jianshu.com/p/d3d23386ee89
+AndroidManifest.xml中的meta-data标签、gradle中的manifestPlaceholder https://www.jianshu.com/p/05087a174218
+groovy 中的list与数组定义上的区别 https://www.jianshu.com/p/504351860eb2
+多渠道打包之BaseVariant源码 https://www.jianshu.com/p/e7276f4e2ffd
+Android自定义日历 https://www.jianshu.com/p/b021a1c790e6
+一篇文章理解groovy中的闭包closure,不仅仅限于groovy https://www.jianshu.com/p/15048f4bc4ef
+adb pull 将手机中的文件或者文件夹导入电脑 https://www.jianshu.com/p/e6a02c8d9948
+音频文件的编码格式 https://www.jianshu.com/p/3b2982d8fee8
+FFmpeg命令行工具的使用：ffmpeg https://www.jianshu.com/p/f15fe6f7202f
+FFmpeg命令行工具的使用：ffplay https://www.jianshu.com/p/ae828451426e
+FFmpeg命令行工具的使用：ffprobe https://www.jianshu.com/p/b2c933b62fbc
+ffmpeg configure参数说明 https://www.jianshu.com/p/7c81c508f983
+ffmpeg通过API重命名文件 https://www.jianshu.com/p/cc59382a7a4f
+ffmpeg通过API删除文件 https://www.jianshu.com/p/daf574cbec4d
+ffmpeg图片与视频互转 https://www.jianshu.com/p/11e8d71200de
+FFmpeg滤镜命令-----视频裁剪与拼接 https://www.jianshu.com/p/f1d9f1e1d254
+FFmpeg滤镜命令-----视频裁剪 https://www.jianshu.com/p/43736c33a093
+ffmpeg处理原始数据（YUV、PCM）命令 https://www.jianshu.com/p/210ab1749bc1
+FFmpeg音视频提取 https://www.jianshu.com/p/25d63cb55496
+shell中的变量 https://www.jianshu.com/p/a58cf2e0a292
+多命令处理 https://www.jianshu.com/p/dd0c8ed34b2e
+holleworld https://www.jianshu.com/p/20424aae1aa1
+About FFmpeg https://www.jianshu.com/p/03cb3a735c3e
+ffmpeg打印log，使用clang 编译 https://www.jianshu.com/p/6d355b51bd8d
+ffmpeg 抓取mac 笔记本摄像头,直播推流,使用VLC播放 https://www.jianshu.com/p/bb34f68ba6cc
+[emerg] 30766#0: unknown directive "rtmp" in /usr/local/etc/nginx/nginx.conf:16 https://www.jianshu.com/p/3d1b51d9359c
+ffmpeg推流及拉流 https://www.jianshu.com/p/41d919d7a22e
+ffmpeg录制摄像头 https://www.jianshu.com/p/6f345eaf3471
+FFmpeg录制屏幕 https://www.jianshu.com/p/280744505be5
+mac自定义快捷键（以关机、重启、锁屏为例） https://www.jianshu.com/p/da6de97c33bb
+mac上Python安装和修改Python默认路径遇到的问题 https://www.jianshu.com/p/8a6e4aa0eb7b
+MAC 如何删除系统自带输入法 https://www.jianshu.com/p/209c59da5c93
+mac OS下编译、安装FFmpeg https://www.jianshu.com/p/85f905ddb36f
+解决重启SHELL后不会自动加载.bash_profile https://www.jianshu.com/p/84d43b117bc0
+Mac 终端 oh-my-zsh 配置 https://www.jianshu.com/p/18987b7c8216
+Mac 配置gradle环境变量 https://www.jianshu.com/p/14f0b20a2391
+AVCodec https://www.jianshu.com/p/1eb502a1d96c
+mac下FFmpeg交叉编译生成Android平台下的so库 https://www.jianshu.com/p/0a65b6e2b591
+Mac 上源码编译并搭建直播推流服务器nginx + rtmp https://www.jianshu.com/p/99fd7d447f41
+夜，很美，我在思念谁 https://www.jianshu.com/p/5d2d40009f47
+没有情人的情人节 https://www.jianshu.com/p/c9b4dc56e70a
+迎春 送友人 https://www.jianshu.com/p/c0194591ec9b
+清醒 https://www.jianshu.com/p/e4cc68492302
+心情矢量 https://www.jianshu.com/p/6acd1849f3f6
+成长 https://www.jianshu.com/p/313e8fe07d69
+散乱的瞬间 https://www.jianshu.com/p/e7723b26a6e7
+凤箫夜 https://www.jianshu.com/p/52f0a097b796
+觉醒 https://www.jianshu.com/p/e1a47660ea96
+月夜情怀（二） https://www.jianshu.com/p/6b01318e49ef
