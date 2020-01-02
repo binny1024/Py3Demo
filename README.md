@@ -16,7 +16,6 @@ You can get the chromedriver from [Firefox](https://github.com/mozilla/geckodriv
 or [chromedriver](http://chromedriver.storage.googleapis.com/index.html),[IE](http://selenium-release.storage.googleapis.com/index.html)
 
 After you download  the driver ,you can put it in to the dictionary :
-
 copy it into the path where python installed, 
 or if you sue mac ,you can put it into `/usr/local/bin`.
 
