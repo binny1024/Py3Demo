@@ -187,12 +187,12 @@ if __name__ == "__main__":
         # )
         # ele = driver.find_element_by_class_name('at')
         print('找到了提到的人....')
-        waiting_for_page_finish(5)
+        waiting_for_page_finish(2)
         driver.find_element_by_class_name('at').click()
         driver.find_element_by_class_name('at').click()
-        waiting_for_page_finish(5)
-        # 获取 好友的列表狂
-        friend_info = set()
+        waiting_for_page_finish(2)
+        # 获取 好友的列表狂,使用列表,然后在使用 集合去重
+        friend_info = []
 
         for i in range(0, 15):
             print("i = " + str(i))
@@ -200,7 +200,7 @@ if __name__ == "__main__":
             js = 'document.getElementsByClassName("friend_list")[0].scrollTop=' + str(top)
             # 就是这么简单，修改这个元素的scrollTop就可以
             driver.execute_script(js)
-            waiting_for_page_finish(5)
+            waiting_for_page_finish(2)
             ul = driver.find_element_by_class_name('fSelector_friendlist')
             lis = ul.find_elements_by_xpath('li')
             for li in lis:
@@ -208,7 +208,7 @@ if __name__ == "__main__":
                 if li.get_attribute('data-uin') is not None:
                     friend.qq = li.get_attribute('data-uin')
                     print("Q  ----   " + li.get_attribute('data-uin'))
-                    friend_info.add(friend)
+                    friend_info.append(friend)
         new_info = set(friend_info)
         print(len(new_info))
         # # 获取 ul
