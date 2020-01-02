@@ -13,7 +13,7 @@ from selenium.webdriver import ActionChains  # 处理悬停
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-from QQ.Friend import Friend
+from QZone.Friend import Friend
 import traceback
 
 def get_all_qq_friends():
