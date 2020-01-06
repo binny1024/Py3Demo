@@ -7,7 +7,7 @@ import configparser
 
 import redis
 
-
+import traceback
 class ScreenShot(threading.Thread):
 
     def __init__(self, task_id, room_url, scroll_top, dur, pit_path, interval_time, fn_list, rt_list):
@@ -17,7 +17,7 @@ class ScreenShot(threading.Thread):
         self.scroll_top = scroll_top
         self.dur = dur
         cp = configparser.ConfigParser()
-        cp.read(r'G:/MyPython/screenshot/config.ini', encoding='utf-8')
+        cp.read(r'./config.ini', encoding='utf-8')
         self.cp = cp
         self.pit_path = pit_path
         self.interval_time = interval_time
@@ -25,7 +25,7 @@ class ScreenShot(threading.Thread):
         redis_host = self.cp.get('base', 'redis_host')
         redis_post = self.cp.get('base', 'redis_post')
         redis_db = self.cp.get('base', 'redis_db')
-        self.r = redis.StrictRedis(redis_host,redis_post ,redis_db)
+        self.r = redis.StrictRedis(redis_host, redis_post, redis_db)
         self.rt_list = rt_list
 
     def create_icon(self, file_temp, file):
@@ -37,13 +37,15 @@ class ScreenShot(threading.Thread):
     def run(self):
         global browser
         try:
-            browser = webdriver.Chrome(self.cp.get('base', 'chromeDriver'))
-            browser.set_window_size(int(self.cp.get('base', 'img_width')),  int(self.cp.get('base', 'ima_heigh')))
+            # browser = webdriver.Chrome(self.cp.get('base', 'chromeDriver'))
+            browser = webdriver.Chrome()
 
-            room_url = self.room_url
-            print(room_url)
-            browser.get(room_url)
-            js_scroll_top = "var q=document.documentElement.scrollTop="+self.scroll_top
+            # set the window size
+            browser.set_window_size(int(self.cp.get('base', 'img_width')), int(self.cp.get('base', 'ima_heigh')))
+
+            print(self.room_url)
+            browser.get(self.room_url)
+            js_scroll_top = "var q=document.documentElement.scrollTop=" + str(self.scroll_top)
             browser.execute_script(js_scroll_top)
             # browser.refresh();
             js = """
@@ -75,12 +77,12 @@ class ScreenShot(threading.Thread):
             #         break
             #     time.sleep(5)
 
-            dit_path = self.pit_path
+            print("dit_path = " + self.pit_path)
             # self.cp.get('base', 'base_img_path')+"pit/"+time.strftime("%Y%m/%d", time.localtime(
             # ))+"/"+self.taskid+"/"+time.strftime("%H%M%S", time.localtime())+"/"
-            is_exists = os.path.exists(dit_path)
+            is_exists = os.path.exists(self.pit_path)
             if not is_exists:
-                os.makedirs(dit_path)
+                os.makedirs(self.pit_path)
 
             # 屏幕暂停的时间
             time.sleep(self.interval_time)
@@ -91,8 +93,8 @@ class ScreenShot(threading.Thread):
             for i in range(l):
                 temp = self.fn_list.pop(0)
                 path = self.rt_list.pop(0)
-                ss_temp_path = dit_path + temp + "_temp.png"
-                ss_path = dit_path + temp + ".jpg"
+                ss_temp_path = self.pit_path + temp + "_temp.png"
+                ss_path = self.pit_path + temp + ".jpg"
                 browser.get_screenshot_as_file(ss_temp_path)
                 self.create_icon(ss_temp_path, ss_path)
 
@@ -101,12 +103,13 @@ class ScreenShot(threading.Thread):
                 if os.path.exists(ss_temp_path):
                     os.remove(ss_temp_path)
                 time.sleep(self.interval_time)
-            else:
-                redis_key = "screenshot_" + self.task_id
-                if len(list_shot) > 0:
-                    self.r.lpush(redis_key, *list_shot)
-                # browser.close()
+            # else:
+            #     redis_key = "screenshot_" + self.task_id
+            #     if len(list_shot) > 0:
+            #         self.r.lpush(redis_key, *list_shot)
+            #     # browser.close()
         except:
+            print(traceback.format_exc())
             browser.close()
         else:
             browser.close()

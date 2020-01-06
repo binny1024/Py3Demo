@@ -10,7 +10,7 @@ from werkzeug.wrappers import Request, Response
 import screenshot
 
 cp = configparser.ConfigParser()
-cp.read(r'G:/MyPython/screenshot/config.ini', encoding='utf-8')
+cp.read(r'./config.ini', encoding='utf-8')
 
 
 @dispatcher.add_method
@@ -21,7 +21,7 @@ def foobar(**kwargs):
 def run_shell(task_id, room_url, scroll_top, dur, pit_path, interval_time, fn_list, rt_list):
     # screenshot.capture(url)
     ss = screenshot.ScreenShot(task_id, room_url, scroll_top,dur, pit_path, interval_time, fn_list, rt_list)
-    ss.start()
+    ss.start()# invoking run method
     return
 
 
@@ -81,4 +81,4 @@ if __name__ == "__main__":
     port = cp.get('base', 'port')
     print('hostname = ', hostname)
     print('port = ', port)
-    run_simple(hostname, port, application)
+    run_simple(hostname, int(port), application)

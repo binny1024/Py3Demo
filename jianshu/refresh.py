@@ -3,7 +3,7 @@ import socket
 from time import sleep
 
 import requests
-from fake.proxy import download_page
+from jianshu.proxy import download_page
 from bs4 import BeautifulSoup
 from selenium import webdriver
 
