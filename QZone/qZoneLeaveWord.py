@@ -13,13 +13,9 @@ from selenium.webdriver import ActionChains  # 处理悬停
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-from QZone.Friend import Friend
 import traceback
 
-def get_all_qq_friends():
-    url = "https://user.qzone.qq.com/proxy/domain/r.qzone.qq.com/cgi-bin/tfriend/friend_show_qqfriends.cgi?uin=596928539&follow_flag=1&groupface_flag=0&fupdate=1&g_tk=115060290&qzonetoken=1f7ef46c25ce2d4b3a72741f3e7c6455af286951cb299a666b8476eaa1de31bc25233dbf4080adba30&g_tk=115060290"
-    driver.get(url)
-    print(driver.get_cookies())
+from QZone.QQZoneLogin import login_qzone
 
 
 def set_message(name, qq):
@@ -88,39 +84,6 @@ def waiting_for_page_finish(seconds):
     sleep(seconds)
 
 
-"""
-登录扣扣空间
-"""
-
-
-def login_qzone(url):
-    # 浏览器窗口最大化
-    driver.maximize_window()
-    # 浏览器地址定向为qq登陆页面
-    driver.get(url)
-    # 定位输入信息frame
-    # driver.switch_to.frame("login_frame")
-
-    """
-    扫码登录
-    """
-
-    """
-    账号密码登录
-    """
-    # # 自动点击账号登陆方式
-    # driver.find_element_by_id("switcher_plogin").click()
-    # # 账号输入框输入已知qq账号
-    # driver.find_element_by_id("u").send_keys("qq号码")
-    # # 密码框输入已知密码
-    # driver.find_element_by_id("p").send_keys("qq密码")
-    # # 自动点击登陆按钮
-    # driver.find_element_by_id("login_button").click()
-    # waiting_for_page_finish(15)
-    # driver.switch_to.default_content()
-    pass
-
-
 if __name__ == "__main__":
     leave_msg = False
     # 创建Chrome浏览器的一个Options实例对象
@@ -148,7 +111,7 @@ if __name__ == "__main__":
     # driver = webdriver.Firefox()
     actionChains = ActionChains(driver)
     try:
-        login_qzone('https://h5.qzone.qq.com/mqzone/index ')
+        login_qzone(driver)
         print('查找说说....')
         WebDriverWait(driver, 20, 1).until(
             EC.presence_of_element_located((By.LINK_TEXT, '说说'))
