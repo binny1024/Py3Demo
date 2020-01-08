@@ -28,10 +28,13 @@ browser.get('http://www.baidu.com/')
 ```
 
 # Capacity 
-Each module is a separate feature, and you can use only one of them. 
+Each module is a separate feature, and you can use only one of them.
+## utils包
+### selenium 工具包:`selenium_utils.py`
 ## huya
 In this module, you can use it to grab the live stream information of tiger teeth.
 ## Qzone
 获取所有的QQ好友,批量留言,检查访问权限等,可扩展
 
-
+### 批量给好友留言:`qZoneLeaveWord.py`
+### 爬QQ好友所有公开的说说:`shuoshuo.py`
