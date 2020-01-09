@@ -12,15 +12,20 @@ def download_video(url):
     r = requests.get(url, stream=True)
     # 使用正则取出文件名
     res = re.findall("(?<=/)\\d\\w*", url)[0]
-    path = '/Users/binny/Movies/wall_video/' + res + '.mp4'
-    if os.path.exists(path):
+    file_path = path + res + '.mp4'
+    if os.path.exists(file_path):
         print('文件已存在....')
     else:
-        with open(str(path), "wb") as mp4:
+        print('开始下载' + res)
+        print("file_path = " + file_path)
+        with open(str(file_path), "wb") as mp4:
             for chunk in r.iter_content(chunk_size=1024 * 1024):
                 if chunk:
                     mp4.write(chunk)
+        print('下载完成' + res)
 
+
+path = '/Users/binny/Movies/wall_video/temp/'
 
 if __name__ == "__main__":
     # 指定json文件所在路径
@@ -33,8 +38,8 @@ if __name__ == "__main__":
 
     # 使用正则取出 所有的url
     video_list = re.findall("(?<='video_path': ').*?(?=',)", str(load_list))
-    print("视频个数: "+ str(len(video_list)))
-    path = '/Users/binny/Movies/wall_video/'
+    print("视频个数: " + str(len(video_list)))
+
     if not os.path.exists(path):
         os.mkdir(path)
         print('文件夹: ' + path + '   已创建')
