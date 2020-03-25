@@ -6,6 +6,7 @@ import requests
 from jianshu.proxy import download_page
 from bs4 import BeautifulSoup
 from selenium import webdriver
+from multiprocessing import Pool
 
 # 定义User-Agent集合
 agent_list = [
@@ -46,66 +47,60 @@ agent_list = [
 ]
 
 
-def to_refresh_page(url_list):
+def to_refresh_page(urls):
     # browser = webdriver.Chrome("../driver/chromedriver_80")
-    browser = webdriver.Chrome()
+    b = webdriver.Chrome()
     chrome_options = webdriver.ChromeOptions()
     # 使用headless无界面浏览器模式
     # chrome_options.add_argument('--headless')  # 增加无界面选项
     # chrome_options.add_argument('--disable-gpu')  # 如果不加这个选项，有时定位会出现问题
     # browser = webdriver.Chrome(options=chrome_options)
     # for i in range(100):
-    for url in url_list:
+    for u in urls:
         # browser.get(url)
         # for url in url_list:
-        for i in range(1000):
+        for j in range(1000):
             # chromeOptions.add_argument("--proxy-server=http://" + random.choice(proxys))
             # browser = webdriver.Chrome(options=chromeOptions)
-            print("i = " + str(i) + "  " + url)
-            browser.get(url)
+            print("j = " + str(j) + "  " + u)
+            b.get(u)
             # browser.refresh()
     # browser.quit()
-    browser.close()
+    b.close()
 
 
-def get_page_url_blockchainbrother():
-    html = download_page("https://www.blockchainbrother.com/articles?page=47")
-    # print(html)
-    soup = BeautifulSoup(html, 'lxml')
-    list_h2 = soup.find_all('h2', attrs={"class": "title"})
-    print("list_h2 = " + str(len(list_h2)))
-    url_list = []
-    for h2 in list_h2:
-        url = (h2.find("a"))['href']
-        print(url)
-        url_list.append(url)
-    return url_list
-
-
-def get_page_jianshu():
-    # html = download_page("https://www.jianshu.com/u/b8d32d868a2b")
-    html = download_page("https://www.jianshu.com/u/5f41e5b2d14c")
-    # print(html)
-    soup = BeautifulSoup(html, 'lxml')
-    list_a = soup.find_all('a', attrs={"class": "title"})
-    print("list_h2 = " + str(len(list_a)))
-    url_list = []
-    for a in list_a:
-        url = "https://www.jianshu.com" + (a['href'])
-        # print(url)
-        url_list.append(url)
-    return url_list
-
+# def get_page_jianshu():
+#     # html = download_page("https://www.jianshu.com/u/b8d32d868a2b")
+#     html = download_page("https://www.jianshu.com/u/5f41e5b2d14c")
+#     # print(html)
+#     soup = BeautifulSoup(html, 'lxml')
+#     list_a = soup.find_all('a', attrs={"class": "title"})
+#     print("list_h2 = " + str(len(list_a)))
+#     ls = []
+#     for a in list_a:
+#         url = "https://www.jianshu.com" + (a['href'])
+#         # print(url)
+#         ls.append(url)
+#     return ls
+#
 
 if __name__ == '__main__':
     # to_refresh_page(get_page_url_blockchainbrother())
     # to_refresh_page(get_page_jianshu())
     browser = webdriver.Chrome()
     browser.get("https://www.jianshu.com/u/5f41e5b2d14c")
-    # 简书需要上拉才能获取更多文章
-    for i in range(3):
-        browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")  # execute_script是插入js代码的
-        sleep(2)  # 加载需要时间，2秒比较合理
+    sleep(5)
+    # # 简书需要上拉才能获取更多文章
+    # for i in range(10):
+    #     browser.execute_script("window.scrollBy(0, 500);")  # execute_script是插入js代码的
+    #     sleep(2)  # 加载需要时间，2秒比较合理
+    while True:
+        try:
+            if browser.find_element_by_link_text('傅里叶变换、拉普拉斯变换和Z变换的简便算法'):
+                break
+        except Exception as e:
+            browser.execute_script("window.scrollBy(0, 500);")  # execute_script是插入js代码的
+            sleep(2)  # 加载需要时间，2秒比较合理
 
     titles = browser.find_elements_by_class_name("title")
     url_list = []
@@ -115,6 +110,10 @@ if __name__ == '__main__':
             url_list.append(str(url))
             print(url)
     browser.quit()
+    # url_list.reverse()
+    print(str(len(url_list)))
+    # pool = Pool(processes=10)
+    # pool.map_async(to_refresh_page, url_list)
     to_refresh_page(url_list)
 
     # print(f"browser text = {browser.page_source}")

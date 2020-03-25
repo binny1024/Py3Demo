@@ -37,6 +37,7 @@ if __name__ == "__main__":
         load_list = json.load(load_f)
 
     # 使用正则取出 所有的url
+    # res = re.findall("'video_path': '(.*?)'", str(load_list))
     video_list = re.findall("(?<='video_path': ').*?(?=',)", str(load_list))
     print("视频个数: " + str(len(video_list)))
 

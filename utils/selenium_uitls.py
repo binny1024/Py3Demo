@@ -114,8 +114,80 @@ class SeleniumUtil:
         )
         return self.driver.find_elements_by_class_name(class_name)
 
+    def find_child_element_by_class_name(self, element, class_name):
+        """
+        查找 element 元素的子元素中类名为 class_name 的子元素
+        :param element: 父元素
+        :param class_name: 子元素的类名
+        :return: 指定类名的子元素
+        """
+        WebDriverWait(self.driver, self.waiting_time, 1).until(
+            EC.presence_of_element_located(
+                (By.CLASS_NAME, class_name)
+            )
+        )
+        return element.find_element_by_class_name(class_name)
+
+    def find_element_by_tag(self, tag_name):
+        """
+
+        :param tag_name:
+        :return:
+        """
+        WebDriverWait(self.driver, self.waiting_time, 1).until(EC.presence_of_element_located(
+            (By.TAG_NAME, tag_name)
+        ))
+        return self.driver.find_element_by_tag_name(tag_name)
+
+    def find_elements_by_tag(self, tag_name):
+        """
+
+        :param tag_name:
+        :return:
+        """
+        WebDriverWait(self.driver, self.waiting_time, 1).until(EC.presence_of_element_located(
+            (By.TAG_NAME, tag_name)
+        ))
+        return self.driver.find_elements_by_tag_name(tag_name)
+
+    def find_childe_elements_by_tag(self, element, tag_name):
+        """
+
+        :param tag_name:
+        :return:
+        """
+        WebDriverWait(self.driver, self.waiting_time, 1).until(EC.presence_of_element_located(
+            (By.TAG_NAME, tag_name)
+        ))
+        return element.find_elements_by_tag_name(tag_name)
+
+    def find_elements_by_xpath(self, xpath):
+        """
+        查找 指定 xpath 的所有元素
+        :param xpath:
+        :return:
+        """
+        WebDriverWait(self.driver, self.waiting_time, 1).until(EC.presence_of_element_located(
+            (By.XPATH, xpath)
+        ))
+        return self.driver.find_elements_by_xpath(xpath)
+
+    def find_element_by_xpath(self, xpath):
+        """
+        查找 指定 xpath 的元素
+        :param xpath:
+        :return:
+        """
+        WebDriverWait(self.driver, self.waiting_time, 1).until(EC.presence_of_element_located(
+            (By.XPATH, xpath)
+        ))
+        return self.driver.find_element_by_xpath(xpath)
+
     def sleep(self, seconds):
         time.sleep(seconds)
 
     def maximize_window(self):
         self.driver.maximize_window()
+
+    def close(self):
+        self.driver.close()
