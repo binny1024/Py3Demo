@@ -2,6 +2,7 @@
   <dictionary name="binny">
     <words>
       <w>prefs</w>
+      <w>pymysql</w>
       <w>shuo</w>
       <w>xpathcha</w>
       <w>xubinbin</w>

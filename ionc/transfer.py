@@ -1,7 +1,9 @@
 from utils.selenium_uitls import SeleniumUtil
 
 selenium_util = SeleniumUtil()
-if __name__ == "__main__":
+
+
+def crawler():
     try:
         # 以太坊浏览器
         url = 'https://www.yitaifang.com/accounts/0xacb1b4ff1974e7ef03cacbbad98448237b913036#tab2'
@@ -40,3 +42,7 @@ if __name__ == "__main__":
     except Exception as e:
         selenium_util.close()
         print(e)
+
+
+if __name__ == "__main__":
+    crawler()
