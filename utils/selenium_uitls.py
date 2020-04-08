@@ -19,15 +19,17 @@ class SeleniumUtil:
         # desired_capabilities["pageLoadStrategy"] = "none"
         self.last_height = 0
         self.options = webdriver.ChromeOptions()
-        self.driver = None
+        self.driver = webdriver.Chrome(options=self.options)
         self.waiting_time = 20
 
     def init(self):
         self.driver = webdriver.Chrome(options=self.options)
 
-    def set_window_size(self, size):
-        # 设置页面大小
-        self.options.add_argument('window-size=' + size)
+    def set_window_size_max(self):
+        self.driver.maximize_window()
+
+    def set_window_size(self, w, h):
+        self.driver.set_window_size(w, h)
 
     def set_waiting_time(self, seconds=20):
         self.waiting_time = seconds
@@ -106,6 +108,14 @@ class SeleniumUtil:
         )
         return self.driver.find_element_by_id(ele_id)
 
+    def find_elements_by_id(self, ele_id):
+        WebDriverWait(self.driver, self.waiting_time, 1).until(
+            EC.presence_of_element_located(
+                (By.ID, ele_id)
+            )
+        )
+        return self.driver.find_elements_by_id(ele_id)
+
     def find_elements_by_class_name(self, class_name):
         WebDriverWait(self.driver, self.waiting_time, 0.5).until(
             EC.presence_of_element_located(
@@ -150,7 +160,7 @@ class SeleniumUtil:
         ))
         return self.driver.find_elements_by_tag_name(tag_name)
 
-    def find_childe_elements_by_tag(self, element, tag_name):
+    def find_child_elements_by_tag(self, element, tag_name):
         """
 
         :param tag_name:
@@ -172,6 +182,45 @@ class SeleniumUtil:
         ))
         return self.driver.find_elements_by_xpath(xpath)
 
+    def find_child_elements_by_xpath(self, element, xpath):
+        """
+        查找 指定 xpath 的所有元素
+        :param element:
+        :param xpath:
+        :return:
+        """
+        WebDriverWait(self.driver, self.waiting_time, 1).until(EC.presence_of_element_located(
+            (By.XPATH, xpath)
+        ))
+        return element.find_elements_by_xpath(xpath)
+
+    def find_child_element_by_xpath(self, element, xpath):
+        """
+        通过 xpath 查找指定 元素 的子元素,比如查找
+
+        <tr>
+          <td class="tab_fwit" style="height: 27px; width: 28px;">1</td>
+          <td style="height: 27px; width: 56px;">
+            <a href="/stock/summary/832113/" target="_blank">832113</a>
+          </td>
+          <td style="height: 27px; width: 56px;">
+            <a href="/stock/summary/832113/" target="_blank">中康国际</a>
+          </td>
+        </tr>
+
+        a = selenium_util.find_child_element_by_xpath(tr, './/td[2]/a')
+
+        . 表示 选取当前节点。从 tr 开始查找
+
+        :param element: 待查找的子元素的父元素
+        :param xpath: 相对于当前父元素的 xpath
+        :return: 查找到的元素
+        """
+        WebDriverWait(self.driver, self.waiting_time, 1).until(EC.presence_of_element_located(
+            (By.XPATH, xpath)
+        ))
+        return element.find_element_by_xpath(xpath)
+
     def find_element_by_xpath(self, xpath):
         """
         查找 指定 xpath 的元素
@@ -182,6 +231,33 @@ class SeleniumUtil:
             (By.XPATH, xpath)
         ))
         return self.driver.find_element_by_xpath(xpath)
+
+    def find_element_by_link_text(self, link_text):
+        """
+
+        :param link_text: 放文本不是 link_text 的时候 ,会走异常
+        :return:
+        """
+        try:
+            WebDriverWait(self.driver, self.waiting_time, 1).until(EC.presence_of_element_located(
+                (By.LINK_TEXT, link_text)
+            ))
+        except Exception as e:
+            print(e)
+            return None
+        return self.driver.find_element_by_link_text(link_text)
+
+    def find_elements_by_link_text(self, link_text):
+        WebDriverWait(self.driver, self.waiting_time, 1).until(EC.presence_of_element_located(
+            (By.LINK_TEXT, link_text)
+        ))
+        return self.driver.find_elements_by_link_text(link_text)
+
+    def element_to_be_clickable(self, link_text):
+        WebDriverWait(self.driver, self.waiting_time, 1).until(EC.presence_of_element_located(
+            (By.LINK_TEXT, link_text)
+        ))
+        return EC.element_to_be_clickable((By.LINK_TEXT, link_text))
 
     def sleep(self, seconds):
         time.sleep(seconds)

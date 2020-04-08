@@ -19,7 +19,7 @@ class Config(object):
 
     def __init__(self, config_filename):
         if config_filename is None:
-            print('请输入配置文件的名字')
+            print('请输入正确的配置文件的名字')
             return
         file_path = os.path.join(os.path.dirname(__file__), config_filename)
         self.cf = configparser.ConfigParser()
@@ -87,7 +87,7 @@ class MyPymysqlPool(BasePymysqlPool):
                               user=self.db_user,
                               passwd=self.db_password,
                               db=self.db_name,
-                              use_unicode=False,
+                              use_unicode=True,
                               charset="utf8",
                               cursorclass=DictCursor)
         return __pool.connection()
@@ -172,7 +172,6 @@ class MyPymysqlPool(BasePymysqlPool):
 
     def insert(self, sql, param=None):
         """
-        @summary: 更新数据表记录
         @param sql: ＳＱＬ格式及条件，使用(%s,%s)
         @param param: 要更新的  值 tuple/list
         @return: count 受影响的行数
@@ -216,13 +215,13 @@ class MyPymysqlPool(BasePymysqlPool):
 
 
 if __name__ == '__main__':
-    mysql = MyPymysqlPool("myProjectConfig.ini", 'pymysql')
+    mysql = MyPymysqlPool("MySqlConfig.ini", 'mysql_config')
 
-    sqlAll = "select * from users;"
+    sqlAll = 'select * from users;'
     result = mysql.getAll(sqlAll)
     print(result)
 
-    sqlAll = "select * from users;"
+    sqlAll = 'select * from users;'
     result = mysql.getMany(sqlAll, 2)
     print(result)
 

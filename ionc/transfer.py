@@ -11,7 +11,7 @@ def crawler():
         selenium_util.set_waiting_time(50)
 
         # 浏览器窗口最大化
-        selenium_util.set_window_size('1200x600')
+        selenium_util.set_window_size_max()
         # 浏览器地址定向为qq登陆页面
         selenium_util.driver.get(url)
         # /html/body/div[1]/div[2]/div/div[2]/div[2]/div[2]/div/div[2]/div[1]/table/tbody/tr[1]
@@ -34,7 +34,7 @@ def crawler():
             tx_to_text = selenium_util.find_child_element_by_class_name(tx_to_element, 'address').text
             print('  to : ' + tx_to_text)
 
-            tx_value_element = selenium_util.find_childe_elements_by_tag(tx_lists[index], 'td')[5]
+            tx_value_element = selenium_util.find_child_elements_by_tag(tx_lists[index], 'td')[5]
             tx_value_element_text = tx_value_element.text
             print('value : ' + tx_value_element_text)
 

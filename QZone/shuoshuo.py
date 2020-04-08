@@ -20,7 +20,7 @@ if __name__ == "__main__":
         selenium_util.set_waiting_time(50)
 
         # 浏览器窗口最大化
-        selenium_util.set_window_size('1200x600')
+        selenium_util.set_window_size_max()
         # 浏览器地址定向为qq登陆页面
         selenium_util.driver.get('https://i.qq.com/')
         # 定位输入信息frame
