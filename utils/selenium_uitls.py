@@ -13,12 +13,14 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
 class SeleniumUtil:
-    def __init__(self):
+    def __init__(self, forbidden_image=False):
         # # get直接返回，不再等待界面加载完成
         # desired_capabilities = DesiredCapabilities.CHROME
         # desired_capabilities["pageLoadStrategy"] = "none"
         self.last_height = 0
         self.options = webdriver.ChromeOptions()
+        if forbidden_image:
+            self.set_chrome_forbidden_image()
         self.driver = webdriver.Chrome(options=self.options)
         self.waiting_time = 20
 

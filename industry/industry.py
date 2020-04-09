@@ -20,7 +20,37 @@ class IndustryCompanyUrl:
         self.done = done
 
 
+global selenium_util
+global mysql
+
+
+def init_industry_mysql():
+    """
+    初始化 mysql 对象
+    :return:
+    """
+    global mysql
+    mysql = MyPymysqlPool("../dbmysql/industry_mysql.ini", 'mysql_config')
+
+
+def init_selenium_util():
+    """
+    初始化 selenium_util
+    :return:
+    """
+    global selenium_util
+    selenium_util = SeleniumUtil(True)
+    # selenium_util.set_waiting_time(10)
+    selenium_util.set_window_size(1920, 1080)
+
+
 def company_detail(url, companies):
+    """
+    解析公司简介页面
+    :param url:
+    :param companies:
+    :return:
+    """
     print(url)
     selenium_util.driver.get(url)
     # /html/body/div[2]/div[3]/div[1]/h1
@@ -164,13 +194,12 @@ def company_detail(url, companies):
 
 def update_industry_catg_url():
     """
-    获取上市公司的列表页面的完成地址 并更新到数据库
+    从 industry_catg表中获取碎片信息,拼接出上市公司的列表页面的完整地址,并回更新到数据库
     :return:
     """
-    mysql = get_industry_mysql()
     url_base = 'https://s.askci.com/stock/'
 
-    sql_all_item = 'select id,stocktype,orgcode from industry_catg;'
+    sql_all_item = 'select id,stocktype,orgcode from industry_category;'
     result = mysql.getAll(sql_all_item)
     com_url_objs = []
     for res in result:
@@ -180,7 +209,7 @@ def update_industry_catg_url():
         # print(whole_url)
         com_url_objs.append(com_url)
 
-    sql = 'UPDATE industry_catg SET catg_url=%s where orgcode=%s'
+    sql = 'UPDATE industry_category SET catg_url=%s where orgcode=%s'
 
     for com_url_obj in com_url_objs:
         # print(company_url)
@@ -188,66 +217,66 @@ def update_industry_catg_url():
         id_ = mysql.update(sql, (com_url_obj.url,
                                  com_url_obj.org_code))
         print(id_)
-    mysql.dispose()
 
 
-def get_industry_mysql():
+def parse_catg_url_list_page(industry_catg_obj):
     """
-    获取 mysql 对象
-    :return:
-    """
-    mysql = MyPymysqlPool("../dbmysql/industry_mysql.ini", 'mysql_config')
-    return mysql
-
-
-def parse_company_url_list_page(industry_catg_obj):
-    """
-     解析上市公司列表页,查看是否有数据
+    解析上市公司列表页
+    查看是否有数据
     :param industry_catg_obj:
-    :return:
+    :return: company_profile_url_list or []  公司的 简介列表
     """
     url = industry_catg_obj.url
     selenium_util.driver.get(url)
     tr_list = selenium_util.find_elements_by_xpath('//*[@id="ResultUl"]/tr')
     if (len(tr_list) == 1) and (tr_list[0].text == '暂无数据'):
-        print("此页没有公司列表 " + url)
-        return
-    print('正在解析')
-    a_href_list = parse_current_company_list(tr_list)
-    next_page = selenium_util.find_element_by_link_text('下一页')
-    clickable = next_page.is_enabled()
-    print('解析下一页')
+        # print("此页没有公司列表 " + url)
+        return []
+    print('正在解析 org_code = ' + industry_catg_obj.org_code)
     xpath_total_page_num = '//*[@id="kkpager"]/div[1]/span[2]/span/span[3]'
     total_page_num = selenium_util.find_element_by_xpath(xpath_total_page_num).text
     xpath_current_page_num = '//*[@id="kkpager"]/div[1]/span[2]/span/span[1]'
+    # print('正在解析')
+    company_profile_url_list = parse_current_company_profile_url_list(tr_list)
+    if total_page_num == "1":
+        # 如果只有一页,解析完直接返回解析结果
+        print('org_code = ' + industry_catg_obj.org_code + ' size = ' + str(len(company_profile_url_list)))
+        return company_profile_url_list
+    next_page = selenium_util.find_element_by_link_text('下一页')
+
+    clickable = next_page.is_enabled()
+    # print('解析下一页')
+
     while clickable:
-        print('clickable = ' + str(clickable))
+        # print('clickable = ' + str(clickable))
         next_page.click()
         results = selenium_util.find_elements_by_xpath('//*[@id="ResultUl"]/tr')
-        a_href_list = a_href_list + parse_current_company_list(results)
+        company_profile_url_list = company_profile_url_list + parse_current_company_profile_url_list(results)
         selenium_util.scroll_window_to_down()
         current_page_num = selenium_util.find_element_by_xpath(xpath_current_page_num).text
-        print('current_page_num = ' + current_page_num + ' total_page_num = ' + total_page_num)
+        # print('current_page_num = ' + current_page_num + ' total_page_num = ' + total_page_num)
         if current_page_num == total_page_num:
-            print('没有下一页了')
+            # print('没有下一页了')
             break
         next_page = selenium_util.find_element_by_link_text('下一页')
+        if next_page is None:
+            break
         clickable = next_page.is_enabled()
+    print('org_code = ' + industry_catg_obj.org_code + ' size = ' + str(len(company_profile_url_list)))
 
-    for href in a_href_list:
-        print(href)
+    # for href in catg_list:
+    #     print(href)
 
-        # company_detail(href, companies)
-    return a_href_list
+    # company_detail(href, companies)
+    return company_profile_url_list
 
 
-def parse_current_company_list(tr_list):
+def parse_current_company_profile_url_list(tr_list):
     # 遍历上市公司列表
     a_href_list = []
     for tr in tr_list:
         # print(tr.text)
         # /html/body/div[3]/div[2]/div[1]/div/div[1]/div[2]/table/tbody/tr[1]/td[2]/a
-
         # 获取子元素
         a = selenium_util.find_child_element_by_xpath(tr, './/td[2]/a')
         # 获取跳转链接
@@ -257,11 +286,19 @@ def parse_current_company_list(tr_list):
     return a_href_list
 
 
-if __name__ == "__main__":
-    # update_industry_catg_url()
+def test_mysql_update():
+    sql = 'UPDATE industry_category SET items_count=%s where orgcode=%s'
+    id_ = mysql.update(sql, ('230', 'ci0000001534'))
+    print(id_)
 
-    mysql = get_industry_mysql()
-    sql_all = 'select id,catg_url, orgcode, stocktype from industry_catg;'
+
+def get_industry_category_objs():
+    """
+    读取 industry.industry_category 表中,  items_count IS NULL 的所有记录
+    保存到 industry_catg_objs 列表中
+    :return: industry_catg_objs
+    """
+    sql_all = "select id,catg_url, orgcode, stocktype from industry_category where items_count IS NULL;"
     industry_catg_list = mysql.getAll(sql_all)
     industry_catg_objs = []
     for industry_catg in industry_catg_list:
@@ -273,14 +310,36 @@ if __name__ == "__main__":
         ))
 
     print(len(industry_catg_objs))
+    return industry_catg_objs
 
-    selenium_util = SeleniumUtil()
-    selenium_util.set_waiting_time(10)
-    selenium_util.set_window_size(1920, 1080)
 
-    company_url_list = parse_company_url_list_page(industry_catg_objs[0])
-    # todo : 将 获取的公司地址保存到数据库中
+if __name__ == "__main__":
+    init_industry_mysql()
+    init_selenium_util()
 
+    # update_industry_catg_url()
+    # get_industry_catg_objs()
+    industry_category_objs = get_industry_category_objs()
+    for industry_catg_obj in industry_category_objs:
+        company_profile_url_list = parse_catg_url_list_page(industry_catg_obj)
+        sql = 'UPDATE industry_category SET items_count=%s where orgcode=%s'
+        id_ = mysql.update(sql, (len(company_profile_url_list), industry_catg_obj.org_code))
+        print(id_)
+        # todo : 将 获取的公司地址保存到数据库中
+        # sql = "INSERT INTO `industry_company_profile_url`" \
+        #       " (com_url, catg_id, orgcode, stocktype) " \
+        #       "VALUES (%s, %s,%s, %s)"
+        # for company_profile_url in company_profile_url_list:
+        #     # print(company_url)
+        #     # parse_company_list_page(company_url)
+        #     id_ = mysql.update(sql, (company_profile_url,
+        #                              com_url_obj.org_code))
+        #     print(id_)
+
+    print("done")
+
+    # company_url_list = parse_company_url_list_page(industry_catg_objs[0])
+    # company_url_list = parse_company_url_list_page(industry_catg_objs[1])
     # for industry_catg in industry_catg_list:
     #     parse_company_list_page(industry_catg)
 

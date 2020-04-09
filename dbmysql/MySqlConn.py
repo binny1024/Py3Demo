@@ -168,7 +168,9 @@ class MyPymysqlPool(BasePymysqlPool):
         @param param: 要更新的  值 tuple/list
         @return: count 受影响的行数
         """
-        return self.__query(sql, param)
+        id_ = self.__query(sql, param)
+        self._conn.commit()
+        return id_
 
     def insert(self, sql, param=None):
         """
@@ -212,6 +214,9 @@ class MyPymysqlPool(BasePymysqlPool):
             self.end('rollback')
         self._cursor.close()
         self._conn.close()
+
+    def commit(self):
+        self._conn.commit()
 
 
 if __name__ == '__main__':
