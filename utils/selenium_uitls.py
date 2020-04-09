@@ -47,8 +47,9 @@ class SeleniumUtil:
     def set_chrome_forbidden_image(self):
         # 禁止加载图片
         self.options.add_argument('blink-settings=imagesEnabled=false')
-        # 不加载图片
-        self.options.add_experimental_option('prefs', {"profile.managed_default_content_settings.images": 2})
+        # 不加载图片和css
+        prefs = {"profile.managed_default_content_settings.images": 2, 'permissions.default.stylesheet': 2}
+        self.options.add_experimental_option('prefs', prefs)
 
     def set_chrome_mobile(self):
         # 更换头部

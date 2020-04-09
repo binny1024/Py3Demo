@@ -178,7 +178,10 @@ class MyPymysqlPool(BasePymysqlPool):
         @param param: 要更新的  值 tuple/list
         @return: count 受影响的行数
         """
-        return self.__query(sql, param)
+        # return self.__query(sql, param)
+        id_ = self.__query(sql, param)
+        self._conn.commit()
+        return id_
 
     def delete(self, sql, param=None):
         """
@@ -226,19 +229,19 @@ if __name__ == '__main__':
     result = mysql.getAll(sqlAll)
     print(result)
 
-    sqlAll = 'select * from users;'
-    result = mysql.getMany(sqlAll, 2)
-    print(result)
-
-    result = mysql.getOne(sqlAll)
-    print(result)
-
-    sql = "INSERT INTO `users` (`email`, `password`) VALUES (%s, %s)"
-    result = mysql.insert(sql, ('webmaster@python.org', 'very-secrethhhh'))
-
-    sqlAll = "select * from users;"
-    result = mysql.getAll(sqlAll)
-    print(result)
+    # sqlAll = 'select * from users;'
+    # result = mysql.getMany(sqlAll, 2)
+    # print(result)
+    #
+    # result = mysql.getOne(sqlAll)
+    # print(result)
+    #
+    # sql = "INSERT INTO `users` (`email`, `password`) VALUES (%s, %s)"
+    # result = mysql.insert(sql, ('webmaster@python.org', 'very-secrethhhh'))
+    #
+    # sqlAll = "select * from users;"
+    # result = mysql.getAll(sqlAll)
+    # print(result)
     # mysql.insert("insert into myTest.aa set a=%s", (1))
 
     # 释放资源
