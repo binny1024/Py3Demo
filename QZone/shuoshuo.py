@@ -16,16 +16,15 @@ if __name__ == "__main__":
         if not os.path.exists(path):
             os.mkdir(path)
         # selenium_util.set_chrome_forbidden_image()
-        selenium_util.init()
         selenium_util.set_waiting_time(50)
 
         # 浏览器窗口最大化
         selenium_util.set_window_size_max()
         # 浏览器地址定向为qq登陆页面
-        selenium_util.driver.get('https://i.qq.com/')
+        selenium_util.get('https://i.qq.com/')
         # 定位输入信息frame
         selenium_util.find_element_by_id('login_frame')
-        selenium_util.driver.switch_to.frame("login_frame")
+        selenium_util.switch_to_frame("login_frame")
 
         # 快捷登录 二维码
         face = selenium_util.find_elements_by_class_name('face')
@@ -37,31 +36,31 @@ if __name__ == "__main__":
         qq = '1270976774'  # 孙月
         qq = '596928539'  # 自己
         shuoshuo = open(path + os.sep + qq + '.txt', 'a+')
-        selenium_util.driver.get('https://user.qzone.qq.com/' + qq)
+        selenium_util.get('https://user.qzone.qq.com/' + qq)
         try:
             """
             刚进空间,如果会跳出一个 '我知道了' 按钮,则点击一下该按钮
             不点击是否可以执行后面逻辑
             """
-            selenium_util.driver.find_element_by_link_text("我知道了").click()
+            selenium_util.find_element_by_link_text("我知道了").click()
             selenium_util.sleep(1)
             print("我知道了")
         except Exception as e:
             print("没有发现 --我知道了-- 弹窗")
 
         # 账号密码登录
-        # selenium_util.driver.find_element_by_id("switcher_plogin").click()
+        # selenium_util.find_element_by_id("switcher_plogin").click()
         # # 账号输入框输入已知qq账号
-        # selenium_util.driver.find_element_by_id("u").send_keys("596928539")
+        # selenium_util.find_element_by_id("u").send_keys("596928539")
         # # 密码框输入已知密码
-        # selenium_util.driver.find_element_by_id("p").send_keys("lx1228xbb")
+        # selenium_util.find_element_by_id("p").send_keys("lx1228xbb")
         # # 自动点击登陆按钮
-        # selenium_util.driver.find_element_by_id("login_button").click()
+        # selenium_util.find_element_by_id("login_button").click()
         # sleep(15)
         # driver.switch_to.default_content()
 
         selenium_util.wait_presence_by_link_text('说说')
-        selenium_util.driver.find_element_by_link_text('说说').click()
+        selenium_util.find_element_by_link_text('说说').click()
         selenium_util.find_element_by_id('app_canvas_frame')
         selenium_util.switch_to_frame('app_canvas_frame')
         print("进入 iframe")
@@ -91,11 +90,11 @@ if __name__ == "__main__":
                 print('是否出现页面索引....')
                 try:
 
-                    if selenium_util.driver.find_element_by_link_text(
+                    if selenium_util.find_element_by_link_text(
                             '下一页'):
                         print('可以跳转......')
                         selenium_util.sleep(5)
-                        selenium_util.driver.find_element_by_link_text('下一页').click()
+                        selenium_util.find_element_by_link_text('下一页').click()
                         break
                 except Exception as e:
                     if i == page_num:
@@ -127,4 +126,4 @@ if __name__ == "__main__":
 
     except Exception as e:
         print(traceback.format_exc())
-        selenium_util.driver.close()
+        selenium_util.close()

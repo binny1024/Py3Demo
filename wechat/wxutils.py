@@ -247,7 +247,6 @@ def removeIpg():
 
 def saveTxtToPNG(text):
     print("将文本保存为图片")
-    pygame.init()
 
     im = Image.new("RGB", (2000, 45000), (255, 255, 255))
     from PIL import ImageDraw

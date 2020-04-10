@@ -7,13 +7,12 @@ def crawler():
     try:
         # 以太坊浏览器
         url = 'https://www.yitaifang.com/accounts/0xacb1b4ff1974e7ef03cacbbad98448237b913036#tab2'
-        selenium_util.init()
         selenium_util.set_waiting_time(50)
 
         # 浏览器窗口最大化
         selenium_util.set_window_size_max()
         # 浏览器地址定向为qq登陆页面
-        selenium_util.driver.get(url)
+        selenium_util.get(url)
         # /html/body/div[1]/div[2]/div/div[2]/div[2]/div[2]/div/div[2]/div[1]/table/tbody/tr[1]
         tx_lists = selenium_util.find_elements_by_xpath(
             '/html/body/div[1]/div[2]/div/div[2]/div[2]/div[2]/div/div[2]/div[1]/table/tbody/tr')
