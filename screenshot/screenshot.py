@@ -113,3 +113,4 @@ class ScreenShot(threading.Thread):
             browser.close()
         else:
             browser.close()
+

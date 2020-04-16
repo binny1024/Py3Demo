@@ -23,11 +23,11 @@ if __name__ == "__main__":
         # 浏览器地址定向为qq登陆页面
         selenium_util.get('https://i.qq.com/')
         # 定位输入信息frame
-        selenium_util.find_element_by_id('login_frame')
+        selenium_util.find_one_element_by_id('login_frame')
         selenium_util.switch_to_frame("login_frame")
 
         # 快捷登录 二维码
-        face = selenium_util.find_elements_by_class_name('face')
+        face = selenium_util.find_all_elements_by_class_name('face')
         selenium_util.sleep(2)
         face[0].click()
         selenium_util.sleep(2)
@@ -42,7 +42,7 @@ if __name__ == "__main__":
             刚进空间,如果会跳出一个 '我知道了' 按钮,则点击一下该按钮
             不点击是否可以执行后面逻辑
             """
-            selenium_util.find_element_by_link_text("我知道了").click()
+            selenium_util.find_one_element_by_link_text("我知道了").click()
             selenium_util.sleep(1)
             print("我知道了")
         except Exception as e:
@@ -60,13 +60,13 @@ if __name__ == "__main__":
         # driver.switch_to.default_content()
 
         selenium_util.wait_presence_by_link_text('说说')
-        selenium_util.find_element_by_link_text('说说').click()
-        selenium_util.find_element_by_id('app_canvas_frame')
+        selenium_util.find_one_element_by_link_text('说说').click()
+        selenium_util.find_one_element_by_id('app_canvas_frame')
         selenium_util.switch_to_frame('app_canvas_frame')
         print("进入 iframe")
         selenium_util.scroll_window_to_bottom()
         # 获取 最大页数
-        page_num_str = selenium_util.find_element_by_id('pager_last_0').text
+        page_num_str = selenium_util.find_one_element_by_id('pager_last_0').text
         print('page_num = ' + page_num_str)
         page_num = int(page_num_str) + 1
         print('page_num = ' + str(page_num))
@@ -74,9 +74,9 @@ if __name__ == "__main__":
             selenium_util.sleep(5)
             # selenium_util.scroll_window_to_top()
             # 获取说说内容
-            content_list = selenium_util.find_elements_by_class_name('content')
+            content_list = selenium_util.find_all_elements_by_class_name('content')
             # 获取发表说说的时间
-            date_list = selenium_util.find_elements_by_class_name('c_tx.c_tx3.goDetail')
+            date_list = selenium_util.find_all_elements_by_class_name('c_tx.c_tx3.goDetail')
             # 当前页说说的个数
             count = len(content_list)
             for j in range(0, count):
@@ -90,11 +90,11 @@ if __name__ == "__main__":
                 print('是否出现页面索引....')
                 try:
 
-                    if selenium_util.find_element_by_link_text(
+                    if selenium_util.find_one_element_by_link_text(
                             '下一页'):
                         print('可以跳转......')
                         selenium_util.sleep(5)
-                        selenium_util.find_element_by_link_text('下一页').click()
+                        selenium_util.find_one_element_by_link_text('下一页').click()
                         break
                 except Exception as e:
                     if i == page_num:

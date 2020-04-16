@@ -39,13 +39,13 @@ def login_qzone(driver):
     账号密码登录
     """
     # # 自动点击账号登陆方式
-    driver.find_element_by_id("switcher_plogin").click()
+    driver.find_one_element_by_id("switcher_plogin").click()
     # 账号输入框输入已知qq账号
-    driver.find_element_by_id("u").send_keys("596928539")
+    driver.find_one_element_by_id("u").send_keys("596928539")
     # 密码框输入已知密码
-    driver.find_element_by_id("p").send_keys("lx1228xbb")
+    driver.find_one_element_by_id("p").send_keys("lx1228xbb")
     # 自动点击登陆按钮
-    driver.find_element_by_id("login_button").click()
+    driver.find_one_element_by_id("login_button").click()
     sleep(15)
     # driver.switch_to.default_content()
 pass

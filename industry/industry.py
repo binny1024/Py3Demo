@@ -5,6 +5,11 @@ from utils.selenium_uitls import SeleniumUtil
 import re
 from multiprocessing import Process
 
+"""
+采集上市公司的信息
+股票代码、股票名称、公司全称、上市时间（遗漏，需要补充）
+"""
+
 
 class IndustryHelper:
     def __init__(self, category_id, org_code, stock_type, category_url, done=False, com_url_list=None):
@@ -129,7 +134,7 @@ def company_detail(url):
     selenium_util.get(url)
     # /html/body/div[2]/div[3]/div[1]/h1
     xpath_stock_name_with_code = '/html/body/div[2]/div[3]/div[1]/h1'
-    results = selenium_util.find_element_by_xpath(xpath_stock_name_with_code)
+    results = selenium_util.find_one_element_by_xpath(xpath_stock_name_with_code)
     stock_name_with_code_text = results.text
     p = r'\d+'
     ss = re.search(p, stock_name_with_code_text)
@@ -140,15 +145,15 @@ def company_detail(url):
     stock_name = ss.group()
     # print("股票名字:" + stock_name)
     xpath_tbody_trs = '/html/body/div[2]/div[3]/div[2]/div[2]/table/tbody/tr'
-    tr_list = selenium_util.find_elements_by_xpath(xpath_tbody_trs)
+    tr_list = selenium_util.find_all_elements_by_xpath(xpath_tbody_trs)
     # print("tr 的个数" + str(len(tr_list)))
 
     # 遍历简介item
     for tr in tr_list:
         # /html/body/div[2]/div[3]/div[2]/div[2]/table/tbody/tr[1]/td[2]
         # 公司名称：	平安银行股份有限公司
-        td_key = selenium_util.find_child_element_by_xpath(tr, './/td[1]')
-        td_value = selenium_util.find_child_element_by_xpath(tr, './/td[2]')
+        td_key = selenium_util.find_one_child_element_by_xpath(tr, './/td[1]')
+        td_value = selenium_util.find_one_child_element_by_xpath(tr, './/td[2]')
 
         td_key_text = td_key.text
         if td_key_text in keys_map.keys():
@@ -161,7 +166,7 @@ def company_detail(url):
                 2，一个特殊的地址：https://s.askci.com/stock/summary/HK8613/ 
                 
                 """
-                tds = selenium_util.find_child_elements_by_tag(td_value, 'a')
+                tds = selenium_util.find_all_child_elements_by_tag(td_value, 'a')
                 td_value_text = ""
                 for td in tds:
                     td_value_text = td_value_text + td.text
@@ -219,19 +224,19 @@ def parse_company_list_page_auto_next(url):
     :return: company_profile_url_list or []  公司的 简介列表
     """
     selenium_util.get(url)
-    tr_list = selenium_util.find_elements_by_xpath('//*[@id="ResultUl"]/tr')
+    tr_list = selenium_util.find_all_elements_by_xpath('//*[@id="ResultUl"]/tr')
     if (len(tr_list) == 1) and (tr_list[0].text == '暂无数据'):
         # print("此页没有公司列表 " + url)
         return []
     xpath_total_page_num = '//*[@id="kkpager"]/div[1]/span[2]/span/span[3]'
-    total_page_num = selenium_util.find_element_by_xpath(xpath_total_page_num).text
+    total_page_num = selenium_util.find_one_element_by_xpath(xpath_total_page_num).text
     xpath_current_page_num = '//*[@id="kkpager"]/div[1]/span[2]/span/span[1]'
     # print('正在解析')
     company_profile_url_list = parse_current_company_profile_url_list(tr_list)
     if total_page_num == "1":
         # 如果只有一页,解析完直接返回解析结果
         return company_profile_url_list
-    next_page = selenium_util.find_element_by_link_text('下一页')
+    next_page = selenium_util.find_one_element_by_link_text('下一页')
 
     clickable = next_page.is_enabled()
     # print('解析下一页')
@@ -239,15 +244,15 @@ def parse_company_list_page_auto_next(url):
     while clickable:
         # print('clickable = ' + str(clickable))
         next_page.click()
-        results = selenium_util.find_elements_by_xpath('//*[@id="ResultUl"]/tr')
+        results = selenium_util.find_all_elements_by_xpath('//*[@id="ResultUl"]/tr')
         company_profile_url_list = company_profile_url_list + parse_current_company_profile_url_list(results)
         selenium_util.scroll_window_to_down()
-        current_page_num = selenium_util.find_element_by_xpath(xpath_current_page_num).text
+        current_page_num = selenium_util.find_one_element_by_xpath(xpath_current_page_num).text
         # print('current_page_num = ' + current_page_num + ' total_page_num = ' + total_page_num)
         if current_page_num == total_page_num:
             # print('没有下一页了')
             break
-        next_page = selenium_util.find_element_by_link_text('下一页')
+        next_page = selenium_util.find_one_element_by_link_text('下一页')
         if next_page is None:
             break
         clickable = next_page.is_enabled()
@@ -267,7 +272,7 @@ def parse_company_list_page_single(url):
     :return: company_profile_url_list or []  公司的 简介列表
     """
     selenium_util.get(url)
-    tr_list = selenium_util.find_elements_by_xpath('//*[@id="ResultUl"]/tr')
+    tr_list = selenium_util.find_all_elements_by_xpath('//*[@id="ResultUl"]/tr')
     company_profile_url_list = parse_current_company_profile_url_list(tr_list)
     return company_profile_url_list
 
@@ -279,7 +284,7 @@ def parse_current_company_profile_url_list(tr_list):
         # print(tr.text)
         # /html/body/div[3]/div[2]/div[1]/div/div[1]/div[2]/table/tbody/tr[1]/td[2]/a
         # 获取子元素
-        a = selenium_util.find_child_element_by_xpath(tr, './/td[2]/a')
+        a = selenium_util.find_one_child_element_by_xpath(tr, './/td[2]/a')
         # 获取跳转链接
         company_detail_url = a.get_attribute('href')
         # print(company_detail_url)
@@ -431,7 +436,7 @@ def get_company_profile_url_list_worker(start_page_num, end_page_num):
         url_list = parse_company_list_page_single(url)
         for url in url_list:
             print(url)
-            sql = 'INSERT INTO industry_company_profile_url (company_url) VALUES(%s)'
+            sql = 'INSERT INTO mian_info_url_list (company_url) VALUES(%s)'
             id_ = mysql.insert(sql, url)
             print(id_)
         if start_page_num == end_page_num:
@@ -474,7 +479,7 @@ def get_company_profile_info_work(index1, index2):
     init_industry_mysql()
     init_selenium_util()
 
-    sql = "select id,company_url from industry_company_profile_url where id BETWEEN " + str(
+    sql = "select id,company_url from mian_info_url_list where id BETWEEN " + str(
         index1) + " and " + str(index2) + ";"
     company_url_list = mysql.getAll(sql)
     for company_url in company_url_list:
@@ -533,7 +538,7 @@ def get_company_profile_info_work(index1, index2):
                            )
         if id_ == 1:
             print(id_)
-            sql_update = 'UPDATE industry_company_profile_url SET done=%s where company_url=%s '
+            sql_update = 'UPDATE mian_info_url_list SET done=%s where company_url=%s '
             mysql.update(sql_update, (True, url))
 
     selenium_util.close()
@@ -629,7 +634,7 @@ def patch_company_profile_worker(company_url_list):
                                )
             if id_ == 1:
                 print(id_)
-                sql_update = 'UPDATE industry_company_profile_url SET done=%s where company_url=%s '
+                sql_update = 'UPDATE mian_info_url_list SET done=%s where company_url=%s '
                 mysql.update(sql_update, (True, url))
         except Exception as e:
             print(traceback.format_exc())
@@ -643,7 +648,7 @@ def patch_company_profile():
     :return:
     """
     init_industry_mysql()
-    sql = "select id,company_url from industry_company_profile_url where done =0;"
+    sql = "select id,company_url from mian_info_url_list where done =0;"
     company_profile_url_list = mysql.getAll(sql)
     patch_company_profile_process(company_profile_url_list)
 
@@ -654,7 +659,7 @@ def get_company_profile_info_process():
     :return:
     """
 
-    p1 = Process(target=get_company_profile_info_work, name='p1', args=(1, 120,))  # 必须加,号
+    p1 = Process(target=get_company_profile_info_work, name='p1', args=(1, 120,))
     p1.start()
     p2 = Process(target=get_company_profile_info_work, name='p2', args=(121, 240,))
     p2.start()
@@ -679,7 +684,7 @@ def get_company_profile_info_process():
 if __name__ == "__main__":
     # init_industry_mysql()
     # init_selenium_util()
-    # update_industry_catg_url()
+    update_industry_catg_url()
     # get_industry_catg_objs()
     # test_process()
     # process_get_categories_contains_all_com_url()

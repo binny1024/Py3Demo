@@ -166,7 +166,7 @@ if __name__ == "__main__":
             driver.execute_script(js)
             waiting_for_page_finish(2)
             ul = driver.find_element_by_class_name('fSelector_friendlist')
-            lis = ul.find_elements_by_xpath('li')
+            lis = ul.find_all_elements_by_xpath('li')
             for li in lis:
                 if li.get_attribute('data-uin') is not None:
                     print(li.text + "----   " + li.get_attribute('data-uin'))

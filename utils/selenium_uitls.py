@@ -13,7 +13,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
 class SeleniumUtil:
-    def __init__(self, forbidden_image=False):
+    def __init__(self, forbidden_image=False, headless=None):
         # # get直接返回，不再等待界面加载完成
         # desired_capabilities = DesiredCapabilities.CHROME
         # desired_capabilities["pageLoadStrategy"] = "none"
@@ -21,6 +21,7 @@ class SeleniumUtil:
         self.options = webdriver.ChromeOptions()
         if forbidden_image:
             self.set_chrome_forbidden_image()
+        if headless:
             self.options.add_argument('headless')  # 设置option
         self.__driver = webdriver.Chrome(options=self.options)
         self.waiting_time = 20
@@ -101,7 +102,7 @@ class SeleniumUtil:
     def switch_to_default_content(self):
         self.__driver.switch_to.default_content()
 
-    def find_element_by_id(self, ele_id):
+    def find_one_element_by_id(self, ele_id):
         WebDriverWait(self.__driver, self.waiting_time, 1).until(
             EC.presence_of_element_located(
                 (By.ID, ele_id)
@@ -109,7 +110,7 @@ class SeleniumUtil:
         )
         return self.__driver.find_element_by_id(ele_id)
 
-    def find_elements_by_id(self, ele_id):
+    def find_all_elements_by_id(self, ele_id):
         WebDriverWait(self.__driver, self.waiting_time, 1).until(
             EC.presence_of_element_located(
                 (By.ID, ele_id)
@@ -117,7 +118,7 @@ class SeleniumUtil:
         )
         return self.__driver.find_elements_by_id(ele_id)
 
-    def find_elements_by_class_name(self, class_name):
+    def find_all_elements_by_class_name(self, class_name):
         WebDriverWait(self.__driver, self.waiting_time, 0.5).until(
             EC.presence_of_element_located(
                 (By.CLASS_NAME, class_name)
@@ -125,7 +126,15 @@ class SeleniumUtil:
         )
         return self.__driver.find_elements_by_class_name(class_name)
 
-    def find_child_element_by_class_name(self, element, class_name):
+    def find_one_element_by_class_name(self, class_name):
+        WebDriverWait(self.__driver, self.waiting_time, 0.5).until(
+            EC.presence_of_element_located(
+                (By.CLASS_NAME, class_name)
+            )
+        )
+        return self.__driver.find_element_by_class_name(class_name)
+
+    def find_one_child_element_by_class_name(self, element, class_name):
         """
         查找 element 元素的子元素中类名为 class_name 的子元素
         :param element: 父元素
@@ -139,7 +148,21 @@ class SeleniumUtil:
         )
         return element.find_element_by_class_name(class_name)
 
-    def find_element_by_tag(self, tag_name):
+    def find_all_child_elements_by_class_name(self, element, class_name):
+        """
+        查找 element 元素的子元素中类名为 class_name 的子元素
+        :param element: 父元素
+        :param class_name: 子元素的类名
+        :return: 指定类名的子元素
+        """
+        WebDriverWait(self.__driver, self.waiting_time, 1).until(
+            EC.presence_of_element_located(
+                (By.CLASS_NAME, class_name)
+            )
+        )
+        return element.find_elements_by_class_name(class_name)
+
+    def find_one_element_by_tag(self, tag_name):
         """
 
         :param tag_name:
@@ -150,7 +173,7 @@ class SeleniumUtil:
         ))
         return self.__driver.find_element_by_tag_name(tag_name)
 
-    def find_elements_by_tag(self, tag_name):
+    def find_all_elements_by_tag(self, tag_name):
         """
 
         :param tag_name:
@@ -161,9 +184,10 @@ class SeleniumUtil:
         ))
         return self.__driver.find_elements_by_tag_name(tag_name)
 
-    def find_child_elements_by_tag(self, element, tag_name):
+    def find_all_child_elements_by_tag(self, element, tag_name):
         """
 
+        :param element:
         :param tag_name:
         :return:
         """
@@ -172,7 +196,30 @@ class SeleniumUtil:
         ))
         return element.find_elements_by_tag_name(tag_name)
 
-    def find_elements_by_xpath(self, xpath):
+    def find_one_child_element_by_tag(self, element, tag_name):
+        """
+
+        :param element:
+        :param tag_name:
+        :return:
+        """
+        WebDriverWait(self.__driver, self.waiting_time, 1).until(EC.presence_of_element_located(
+            (By.TAG_NAME, tag_name)
+        ))
+        return element.find_element_by_tag_name(tag_name)
+
+    def find_one_element_by_name(self, name):
+        """
+
+        :param name:
+        :return:
+        """
+        WebDriverWait(self.__driver, self.waiting_time, 1).until(EC.presence_of_element_located(
+            (By.NAME, name)
+        ))
+        return self.__driver.find_elements_by_name(name)
+
+    def find_all_elements_by_xpath(self, xpath):
         """
         查找 指定 xpath 的所有元素
         :param xpath:
@@ -183,7 +230,7 @@ class SeleniumUtil:
         ))
         return self.__driver.find_elements_by_xpath(xpath)
 
-    def find_child_elements_by_xpath(self, element, xpath):
+    def find_all_child_elements_by_xpath(self, element, xpath):
         """
         查找 指定 xpath 的所有元素
         :param element:
@@ -195,7 +242,7 @@ class SeleniumUtil:
         ))
         return element.find_elements_by_xpath(xpath)
 
-    def find_child_element_by_xpath(self, element, xpath):
+    def find_one_child_element_by_xpath(self, element, xpath):
         """
         通过 xpath 查找指定 元素 的子元素,比如查找
 
@@ -222,7 +269,7 @@ class SeleniumUtil:
         ))
         return element.find_element_by_xpath(xpath)
 
-    def find_element_by_xpath(self, xpath):
+    def find_one_element_by_xpath(self, xpath):
         """
         查找 指定 xpath 的元素
         :param xpath:
@@ -233,7 +280,7 @@ class SeleniumUtil:
         ))
         return self.__driver.find_element_by_xpath(xpath)
 
-    def find_element_by_link_text(self, link_text):
+    def find_one_element_by_link_text(self, link_text):
         """
 
         :param link_text: 放文本不是 link_text 的时候 ,会走异常
@@ -248,7 +295,7 @@ class SeleniumUtil:
             return None
         return self.__driver.find_element_by_link_text(link_text)
 
-    def find_elements_by_link_text(self, link_text):
+    def find_all_elements_by_link_text(self, link_text):
         WebDriverWait(self.__driver, self.waiting_time, 1).until(EC.presence_of_element_located(
             (By.LINK_TEXT, link_text)
         ))
@@ -263,7 +310,8 @@ class SeleniumUtil:
     def get(self, url):
         self.__driver.get(url)
 
-    def sleep(self, seconds):
+    @staticmethod
+    def sleep(seconds):
         time.sleep(seconds)
 
     def maximize_window(self):
@@ -271,3 +319,27 @@ class SeleniumUtil:
 
     def close(self):
         self.__driver.close()
+
+    @staticmethod
+    def send_text(element, text):
+        """
+        向元素发送文本
+        :param element:
+        :param text:
+        :return:
+        """
+        element.send_keys(text)
+
+    def click_by_id(self, element_id):
+        self.__driver.find_element_by_id(element_id).click()
+
+    def set_element_value_by_id(self, element_id, value):
+        """
+        通过 执行js脚本获取 元素，然后设置元素的属性的值
+        :param element_id:
+        :param value:
+        :return:
+        """
+        js = 'document.getElementById("' + element_id + '").value ="' + value + '"'
+        print(js)
+        self.__driver.execute_script(js)
