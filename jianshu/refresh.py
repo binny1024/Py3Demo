@@ -1,12 +1,6 @@
-import random
-import socket
 from time import sleep
 
-import requests
-from jianshu.proxy import download_page
-from bs4 import BeautifulSoup
 from selenium import webdriver
-from multiprocessing import Pool
 
 # 定义User-Agent集合
 agent_list = [

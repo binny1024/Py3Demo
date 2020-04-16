@@ -13,17 +13,36 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
 class SeleniumUtil:
-    def __init__(self, forbidden_image=False, headless=None):
+    def __init__(self,
+                 forbidden_image=False,
+                 headless=None,
+                 proxy=None,
+                 ua=None,
+                 download_path=None):
         # # get直接返回，不再等待界面加载完成
         # desired_capabilities = DesiredCapabilities.CHROME
         # desired_capabilities["pageLoadStrategy"] = "none"
         self.last_height = 0
-        self.options = webdriver.ChromeOptions()
+        self.__prefs = {}
+        self.__options = webdriver.ChromeOptions()
         if forbidden_image:
             self.set_chrome_forbidden_image()
         if headless:
-            self.options.add_argument('headless')  # 设置option
-        self.__driver = webdriver.Chrome(options=self.options)
+            self.__options.add_argument('headless')  # 设置option
+        if proxy:
+            self.__options.add_argument("--proxy-server=http://" + proxy)
+
+        if ua:
+            # 通过设置user-agent，用来模拟移动设备
+            self.__options.add_argument('user-agent=%s' % ua)
+        if download_path:
+            # 设置为 0 禁止弹出窗口
+            self.__prefs['profile.default_content_settings.popups'] = 0
+            self.__prefs['download.default_directory'] = download_path
+
+        self.__options.add_argument('disable-infobars')
+        self.__options.add_experimental_option('prefs', self.__prefs)
+        self.__driver = webdriver.Chrome(options=self.__options)
         self.waiting_time = 20
 
     def set_window_size_max(self):
@@ -37,22 +56,22 @@ class SeleniumUtil:
 
     def set_chrome_language_cn(self):
         # 设置中文
-        self.options.add_argument('lang=zh_CN.UTF-8')
+        self.__options.add_argument('lang=zh_CN.UTF-8')
 
     def set_chrome_close_test_hint(self):
         # 除去“正受到自动测试软件的控制”
-        self.options.add_argument('disable-infobars')
+        self.__options.add_argument('disable-infobars')
 
     def set_chrome_forbidden_image(self):
         # 禁止加载图片
-        self.options.add_argument('blink-settings=imagesEnabled=false')
+        self.__options.add_argument('blink-settings=imagesEnabled=false')
         # 不加载图片和css
-        prefs = {"profile.managed_default_content_settings.images": 2, 'permissions.default.stylesheet': 2}
-        self.options.add_experimental_option('prefs', prefs)
+        self.__prefs["profile.managed_default_content_settings.images"] = 2
+        self.__prefs['permissions.default.stylesheet'] = 2
 
     def set_chrome_mobile(self):
         # 更换头部
-        self.options.add_argument(
+        self.__options.add_argument(
             'user-agent="Mozilla/5.0 (iPod; U; CPU iPhone OS 2_1 like Mac OS X; ja-jp) AppleWebKit/525.18.1 (KHTML, like Gecko) Version/3.1.1 Mobile/5F137 Safari/525.20"')
 
     def get_driver(self):
@@ -320,16 +339,6 @@ class SeleniumUtil:
     def close(self):
         self.__driver.close()
 
-    @staticmethod
-    def send_text(element, text):
-        """
-        向元素发送文本
-        :param element:
-        :param text:
-        :return:
-        """
-        element.send_keys(text)
-
     def click_by_id(self, element_id):
         self.__driver.find_element_by_id(element_id).click()
 
@@ -343,3 +352,13 @@ class SeleniumUtil:
         js = 'document.getElementById("' + element_id + '").value ="' + value + '"'
         print(js)
         self.__driver.execute_script(js)
+
+    @staticmethod
+    def send_text(element, text):
+        """
+        向元素发送文本
+        :param element:
+        :param text:
+        :return:
+        """
+        element.send_keys(text)

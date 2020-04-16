@@ -436,7 +436,7 @@ def get_company_profile_url_list_worker(start_page_num, end_page_num):
         url_list = parse_company_list_page_single(url)
         for url in url_list:
             print(url)
-            sql = 'INSERT INTO mian_info_url_list (company_url) VALUES(%s)'
+            sql = 'INSERT INTO industry_main_info_url_list (company_url) VALUES(%s)'
             id_ = mysql.insert(sql, url)
             print(id_)
         if start_page_num == end_page_num:
@@ -479,7 +479,7 @@ def get_company_profile_info_work(index1, index2):
     init_industry_mysql()
     init_selenium_util()
 
-    sql = "select id,company_url from mian_info_url_list where id BETWEEN " + str(
+    sql = "select id,company_url from industry_main_info_url_list where id BETWEEN " + str(
         index1) + " and " + str(index2) + ";"
     company_url_list = mysql.getAll(sql)
     for company_url in company_url_list:
@@ -538,7 +538,7 @@ def get_company_profile_info_work(index1, index2):
                            )
         if id_ == 1:
             print(id_)
-            sql_update = 'UPDATE mian_info_url_list SET done=%s where company_url=%s '
+            sql_update = 'UPDATE industry_main_info_url_list SET done=%s where company_url=%s '
             mysql.update(sql_update, (True, url))
 
     selenium_util.close()
@@ -634,7 +634,7 @@ def patch_company_profile_worker(company_url_list):
                                )
             if id_ == 1:
                 print(id_)
-                sql_update = 'UPDATE mian_info_url_list SET done=%s where company_url=%s '
+                sql_update = 'UPDATE industry_main_info_url_list SET done=%s where company_url=%s '
                 mysql.update(sql_update, (True, url))
         except Exception as e:
             print(traceback.format_exc())
@@ -648,7 +648,7 @@ def patch_company_profile():
     :return:
     """
     init_industry_mysql()
-    sql = "select id,company_url from mian_info_url_list where done =0;"
+    sql = "select id,company_url from industry_main_info_url_list where done =0;"
     company_profile_url_list = mysql.getAll(sql)
     patch_company_profile_process(company_profile_url_list)
 
