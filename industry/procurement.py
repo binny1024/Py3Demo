@@ -38,6 +38,8 @@ if __name__ == '__main__':
     inpCusStartTime = '2019-04-16'
     inpCusEndTime = '2020-04-16'
 
+
+
     init_selenium_util()
     selenium_util.get(url)
     title = selenium_util.find_one_element_by_id("kw")
@@ -87,18 +89,12 @@ if __name__ == '__main__':
             next_page_clickable = False
         next_page = selenium_util.find_one_element_by_link_text('下一页')
         next_page.click()
+        ul = selenium_util.find_one_element_by_class_name('vT-srch-result-list-bid')
+        lis = selenium_util.find_all_child_elements_by_tag(ul, 'li')
+        for li in lis:
+            a = selenium_util.find_one_child_element_by_tag(li, 'a')
+            href = a.get_attribute('href')
+            print(href)
         current = selenium_util.find_one_element_by_class_name('current')
         current_num = current.text
         print(current_num)
-    # for a_tag in a_tag_list:
-    #     text = a_tag.text
-    #     print(text)
-    #     if text == '下一页':
-    #         break
-    #     a_tag.click()
-    #     ul = selenium_util.find_one_element_by_class_name('vT-srch-result-list-bid')
-    #     lis = selenium_util.find_all_child_elements_by_tag(ul, 'li')
-    #     for li in lis:
-    #         a = selenium_util.find_one_child_element_by_tag(li, 'a')
-    #         href = a.get_attribute('href')
-    #         print(href)
