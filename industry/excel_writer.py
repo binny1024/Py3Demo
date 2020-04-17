@@ -32,7 +32,7 @@ def write_excel():
     worksheet.write(3, 0, 35.5)  # 使用行列的时候第一行起始为0,所以2,0代表着第三行的第一列,等价于A4
     worksheet.write(4, 0, '=SUM(A3:A4)')  # 写上excel公式
     workbook.close()
-    print("写入\"file/生成的Excel_XLSXWRITER.xlsx\"")
+    print("写入\"accessory/生成的Excel_XLSXWRITER.xlsx\"")
 
 
 if __name__ == '__main__':

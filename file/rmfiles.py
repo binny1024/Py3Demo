@@ -2,8 +2,8 @@ import os
 
 path = '/Users/binny/PowerDesigner/2 PowerDesigner视频教程'
 # files = os.listdir(path)
-# for file in files:
-#     print(os.path.join(path, file))
+# for accessory in files:
+#     print(os.path.join(path, accessory))
 
 """
 删除指定目录下下重复的文件
