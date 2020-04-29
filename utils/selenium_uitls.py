@@ -15,7 +15,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 class SeleniumUtil:
     def __init__(self,
                  forbidden_image=False,
-                 headless=None,
+                 headless=True,
                  proxy=None,
                  ua=None,
                  download_path=None):
@@ -42,7 +42,7 @@ class SeleniumUtil:
 
         self.__options.add_argument('disable-infobars')
         self.__options.add_experimental_option('prefs', self.__prefs)
-        self.__driver = webdriver.Chrome(options=self.__options)
+        self.__driver = webdriver.Chrome(r'../driver/chromedriver81',options=self.__options)
         self.waiting_time = 20
 
     def set_window_size_max(self):

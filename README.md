@@ -12,8 +12,10 @@ I use chrome ,you can download a driver depending your browser.
 
 Chromedriver`s version must be same with your chrome browser version in you computer.
 
-You can get the chromedriver from [Firefox](https://github.com/mozilla/geckodriver/releases/),[chromedriver](https://sites.google.com/a/chromium.org/chromedriver/)
-or [chromedriver](http://chromedriver.storage.googleapis.com/index.html),[IE](http://selenium-release.storage.googleapis.com/index.html)
+You can get the chromedriver from [Firefox](https://github.com/mozilla/geckodriver/releases/),
+[chromedriver](https://sites.google.com/a/chromium.org/chromedriver/)
+or [chromedriver](http://chromedriver.storage.googleapis.com/index.html)
+[IE](http://selenium-release.storage.googleapis.com/index.html)
 
 After you download  the driver ,you can put it in to the dictionary :
 copy it into the path where python installed, 

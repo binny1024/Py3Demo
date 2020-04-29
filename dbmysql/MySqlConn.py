@@ -180,7 +180,7 @@ class MyPymysqlPool(BasePymysqlPool):
         """
         # return self.__query(sql, param)
         id_ = self.__query(sql, param)
-        self._conn.commit()
+        # self._conn.commit()
         return id_
 
     def delete(self, sql, param=None):

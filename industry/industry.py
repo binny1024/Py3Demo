@@ -133,16 +133,16 @@ def company_detail(url):
     }
     selenium_util.get(url)
     # /html/body/div[2]/div[3]/div[1]/h1
-    xpath_stock_name_with_code = '/html/body/div[2]/div[3]/div[1]/h1'
-    results = selenium_util.find_one_element_by_xpath(xpath_stock_name_with_code)
-    stock_name_with_code_text = results.text
-    p = r'\d+'
-    ss = re.search(p, stock_name_with_code_text)
-    stock_code = ss.group()
+    # xpath_stock_name_with_code = '/html/body/div[2]/div[3]/div[1]/h1'
+    # results = selenium_util.find_one_element_by_xpath(xpath_stock_name_with_code)
+    # stock_name_with_code_text = results.text
+    # p = r'\d+'
+    # ss = re.search(p, stock_name_with_code_text)
+    # stock_code = ss.group()
     # print("股票代码:" + stock_code)
-    p = "[^（" + stock_code + "）]+"
-    ss = re.search(p, stock_name_with_code_text)
-    stock_name = ss.group()
+    # p = "[^（" + stock_code + "）]+"
+    # ss = re.search(p, stock_name_with_code_text)
+    # stock_name = ss.group()
     # print("股票名字:" + stock_name)
     xpath_tbody_trs = '/html/body/div[2]/div[3]/div[2]/div[2]/table/tbody/tr'
     tr_list = selenium_util.find_all_elements_by_xpath(xpath_tbody_trs)
@@ -179,8 +179,8 @@ def company_detail(url):
                 field_name_in_industry_company_profile_map[keys_map[td_key_text]] = td_value_text
                 # print(td_key_text + td_value_text)
 
-    field_name_in_industry_company_profile_map['stock_code'] = stock_code
-    field_name_in_industry_company_profile_map['stock_name'] = stock_name
+    # field_name_in_industry_company_profile_map['stock_code'] = stock_code
+    # field_name_in_industry_company_profile_map['stock_name'] = stock_name
 
     for key in field_name_in_industry_company_profile_map.keys():
         if field_name_in_industry_company_profile_map[key] == '':
@@ -292,10 +292,50 @@ def parse_current_company_profile_url_list(tr_list):
     return a_href_list
 
 
-def test_mysql_update():
-    sql = 'UPDATE industry_category SET company_counts=%s where org_code=%s'
-    id_ = mysql.update(sql, ('230', 'ci0000001534'))
-    print(id_)
+def parse_company_item_list(tr_list):
+    # 遍历上市公司列表
+    company_item_list = []
+    for tr in tr_list:
+        item = {}
+        # print(tr.text)
+        # /html/body/div[3]/div[2]/div[1]/div/div[1]/div[2]/table/tbody/tr[1]/td[2]/a
+        # 获取子元素 //*[@id="ResultUl"]/tr[7]/td[5]
+        td_stock_code = selenium_util.find_one_child_element_by_xpath(tr, './/td[2]')
+        # 获取 stock_code
+        stock_code = td_stock_code.text
+        item['stock_code'] = stock_code
+
+        # 获取 company_url
+        a = selenium_util.find_one_child_element_by_xpath(tr, './/td[2]/a')
+        company_url = a.get_attribute('href')
+        item['company_url'] = company_url
+
+        # 获取 stock_name
+        td_stock_name = selenium_util.find_one_child_element_by_xpath(tr, './/td[3]')
+        stock_name = td_stock_name.text
+        item['stock_name'] = stock_name
+
+        # 获取 company_name
+        td_company_name = selenium_util.find_one_child_element_by_xpath(tr, './/td[4]')
+        company_name = td_company_name.text
+        item['company_name'] = company_name
+
+        # 获取 datetime
+        td_datetime = selenium_util.find_one_child_element_by_xpath(tr, './/td[5]')
+        datetime = td_datetime.text
+        item['datetime'] = datetime
+
+        td_company_type = selenium_util.find_one_child_element_by_xpath(tr, './/td[8]')
+        # 获取 行业分类
+        company_type = td_company_type.text
+        item['company_type'] = company_type
+
+        td_main_bussiness = selenium_util.find_one_child_element_by_xpath(tr, './/td[9]')
+        # 获取 主营业务
+        main_bussiness = td_main_bussiness.text
+        item['main_business'] = main_bussiness
+        company_item_list.append(item)
+    return company_item_list
 
 
 def get_industry_helper_objs(sql):
@@ -354,23 +394,6 @@ def worker_insert_com_url(index1, index2):
             print(id_)
     # print("done")
     selenium_util.close()
-
-
-def test_process():
-    p1 = Process(target=worker_insert_com_url, name='p1', args=(398, 399,))  # 必须加,号
-    p1.start()
-
-    p2 = Process(target=worker_insert_com_url, name='p2', args=(400, 401,))
-    p2.start()
-
-    p3 = Process(target=worker_insert_com_url, name='p3', args=(402, 404,))
-    p3.start()
-
-    p4 = Process(target=worker_insert_com_url, name='p4', args=(405, 406,))
-    p4.start()
-
-    p5 = Process(target=worker_insert_com_url, name='p5', args=(407, 408,))
-    p5.start()
 
 
 def process_get_categories_contains_all_com_url():
@@ -432,12 +455,25 @@ def get_company_profile_url_list_worker(start_page_num, end_page_num):
     init_industry_mysql()
     while True:
         url = "https://s.askci.com/stock/0-0-0/" + str(start_page_num) + "/"
-        # print(url)
-        url_list = parse_company_list_page_single(url)
-        for url in url_list:
-            print(url)
-            sql = 'INSERT INTO industry_main_info_url_list (company_url) VALUES(%s)'
-            id_ = mysql.insert(sql, url)
+        print(url)
+        selenium_util.get(url)
+        tr_list = selenium_util.find_all_elements_by_xpath('//*[@id="ResultUl"]/tr')
+        # for url in url_list:
+        #     print(url)
+        #     # sql = 'INSERT INTO industry_main_info_url_list (company_url) VALUES(%s)'
+        #     # id_ = mysql.insert(sql, url)
+        #     # print(id_)
+        items = parse_company_item_list(tr_list)
+        print(items)
+        for item in items:
+            print(item)
+            sql = 'INSERT INTO industry_company_profile_simple (company_url, stock_code, stock_name, company_name, company_type,' \
+                  ' main_business, datetime) VALUES(%s,%s,%s,%s,%s,%s,%s)'
+            id_ = mysql.insert(sql, (item['company_url'], item['stock_code'], item['stock_name'], item['company_name'],
+                                     item['company_type'],
+                                     item['main_business'],
+                                     item['datetime']
+                                     ))
             print(id_)
         if start_page_num == end_page_num:
             break
@@ -451,18 +487,26 @@ def get_company_url_list_process():
     开启十个进程,抓取全部的公司简介地址
     :return:
     """
-    p1 = Process(target=get_company_profile_url_list_worker, name='p1', args=(1, 100,))  # 必须加,号
-    p1.start()
-    p2 = Process(target=get_company_profile_url_list_worker, name='p2', args=(101, 200,))
-    p2.start()
-    p3 = Process(target=get_company_profile_url_list_worker, name='p3', args=(201, 300,))
-    p3.start()
-    p4 = Process(target=get_company_profile_url_list_worker, name='p4', args=(301, 400,))
-    p4.start()
-    p5 = Process(target=get_company_profile_url_list_worker, name='p5', args=(401, 500,))
-    p5.start()
-    p6 = Process(target=get_company_profile_url_list_worker, name='p6', args=(501, 574,))
-    p6.start()
+    delt = 574 // 10 + 1
+    for i in range(0, 10):
+        start = delt * i + 1
+        end = delt * (i + 1)
+        print((start, end))
+        p = Process(target=get_company_profile_url_list_worker, args=(start, end,))
+        p.start()
+
+    # p1 = Process(target=get_company_profile_url_list_worker, name='p1', args=(1, 100,))  # 必须加,号
+    # p1.start()
+    # p2 = Process(target=get_company_profile_url_list_worker, name='p2', args=(101, 200,))
+    # p2.start()
+    # p3 = Process(target=get_company_profile_url_list_worker, name='p3', args=(201, 300,))
+    # p3.start()
+    # p4 = Process(target=get_company_profile_url_list_worker, name='p4', args=(301, 400,))
+    # p4.start()
+    # p5 = Process(target=get_company_profile_url_list_worker, name='p5', args=(401, 500,))
+    # p5.start()
+    # p6 = Process(target=get_company_profile_url_list_worker, name='p6', args=(501, 574,))
+    # p6.start()
     # p7 = Process(target=worker_get_company_profile_url_list, name='p7', args=(301, 350,))
     # p7.start()
     # p8 = Process(target=worker_get_company_profile_url_list, name='p8', args=(351, 400,))
@@ -475,19 +519,23 @@ def get_company_url_list_process():
     # p11.start()
 
 
-def get_company_profile_info_work(index1, index2):
-    init_industry_mysql()
-    init_selenium_util()
+def get_company_profile_detail(company_info_list):
+    """
 
-    sql = "select id,company_url from industry_main_info_url_list where id BETWEEN " + str(
-        index1) + " and " + str(index2) + ";"
-    company_url_list = mysql.getAll(sql)
-    for company_url in company_url_list:
-        # print(company_url['company_url'] + " id =" + str(company_url['id']))
-        url = company_url['company_url']
+    :param company_info_list:
+    :return:
+    """
+    for company_info in company_info_list:
+        print(company_info)
+        url = company_info['company_url']
         company_profile_map = company_detail(url)
-        sql_insert = "INSERT INTO industry_company_profile" \
-                     " ( name_cn, name_en, name_old, area, category_description, " \
+        company_profile_map['collection_url'] = url
+        company_profile_map['stock_code'] = company_info['stock_code']
+        company_profile_map['stock_name'] = company_info['stock_name']
+        company_profile_map['datetime'] = company_info['datetime']
+        print(company_profile_map)
+        sql_insert = "INSERT INTO industry_company_profile_detail ( datetime,collection_url,name_cn, name_en, name_old, area," \
+                     " category_description, " \
                      "com_url, stock_name, main_business, product_name," \
                      " controller_stock, stock_code, controller_actual, " \
                      "controller_ultimate, president, president_secretary, " \
@@ -497,11 +545,13 @@ def get_company_profile_info_work(index1, index2):
                      "representative_securities_affairs, balance_sheet_date," \
                      " registered_address, corporate_headquarters, auditor, " \
                      "legal_adviser, e_mail) " \
-                     "VALUES (%s, %s,%s, %s,%s, " \
+                     "VALUES (%s,%s,%s, %s,%s, %s,%s, " \
                      "%s,%s, %s,%s, %s,%s, %s,%s," \
                      " %s,%s, %s,%s, %s,%s, %s,%s, %s,%s, %s,%s, %s,%s, %s,%s, %s,%s, %s)"
         id_ = mysql.insert(sql_insert,
                            (
+                               company_profile_map['datetime'],
+                               company_profile_map['collection_url'],
                                company_profile_map['name_cn'],
                                company_profile_map['name_en'],
                                company_profile_map['name_old'],
@@ -538,42 +588,53 @@ def get_company_profile_info_work(index1, index2):
                            )
         if id_ == 1:
             print(id_)
-            sql_update = 'UPDATE industry_main_info_url_list SET done=%s where company_url=%s '
+            sql_update = 'UPDATE industry_company_profile_simple SET done=%s where company_url=%s '
             mysql.update(sql_update, (True, url))
+    mysql.commit()
 
+
+def get_company_profile_detail_work(index1, index2):
+    """
+    获取公司的详细信息
+    :param index1: 起始 id
+    :param index2: 终止 id
+    :return:
+    """
+    init_industry_mysql()
+    init_selenium_util()
+
+    sql = "select id,company_url,stock_code,stock_name,datetime from industry_company_profile_simple where id BETWEEN " + str(
+        index1) + " and " + str(index2) + ";"
+    company_info_list = mysql.getAll(sql)
+    get_company_profile_detail(company_info_list)
     selenium_util.close()
 
 
 def patch_company_profile_process(company_url_list):
-    # for company_profile in company_url_list:
-    #     print(company_profile['company_url'] + " id =" + str(company_profile['id']))
+    """
+    补丁方法
+    当使用 get_company_profile_detail_work 跑完之后，有一部分没有完成的，使用此方法
+    :param company_url_list:
+    :return:
+    """
+    for company_profile in company_url_list:
+        print(company_profile)
 
-    p1 = Process(target=patch_company_profile_work, name='p1', args=(company_url_list[0:600],))
-    p1.start()
-    p2 = Process(target=patch_company_profile_work, name='p2', args=(company_url_list[600:1200],))
-    p2.start()
-    p3 = Process(target=patch_company_profile_work, name='p3', args=(company_url_list[1200:1800],))
-    p3.start()
-    p4 = Process(target=patch_company_profile_work, name='p4', args=(company_url_list[1800:2400],))
-    p4.start()
-    p5 = Process(target=patch_company_profile_work, name='p5', args=(company_url_list[2400:3000],))
-    p5.start()
-    p6 = Process(target=patch_company_profile_work, name='p6', args=(company_url_list[3000:3600],))
-    p6.start()
-    p7 = Process(target=patch_company_profile_work, name='p7', args=(company_url_list[3600:4600],))
-    p7.start()
-    p8 = Process(target=patch_company_profile_work, name='p8', args=(company_url_list[4600:5200],))
-    p8.start()
-    p9 = Process(target=patch_company_profile_work, name='p9', args=(company_url_list[5200:6000],))
-    p9.start()
-    p10 = Process(target=patch_company_profile_work, name='p10', args=(company_url_list[6000:6556],))
-    p10.start()
+    # delt = len(company_url_list) // 10 + 1
+    # for i in range(0, 10):
+    #     start = delt * i + 1
+    #     end = delt * (i + 1)
+    #     print((start, end))
+    #     p = Process(target=patch_company_profile_work, args=(company_url_list[start:end],))
+    #     p.start()
+    p = Process(target=patch_company_profile_work, args=(company_url_list,))
+    p.start()
 
 
 def patch_company_profile_work(company_url_list):
     init_industry_mysql()
     init_selenium_util()
-    patch_company_profile_worker(company_url_list)
+    get_company_profile_detail(company_url_list)
 
 
 def patch_company_profile_worker(company_url_list):
@@ -582,7 +643,7 @@ def patch_company_profile_worker(company_url_list):
         url = company_url['company_url']
         company_profile_map = company_detail(url)
         sql_insert = "INSERT INTO industry_company_profile" \
-                     " ( name_cn, name_en, name_old, area, category_description, " \
+                     "_detail ( name_cn, name_en, name_old, area, category_description, " \
                      "com_url, stock_name, main_business, product_name," \
                      " controller_stock, stock_code, controller_actual, " \
                      "controller_ultimate, president, president_secretary, " \
@@ -634,7 +695,7 @@ def patch_company_profile_worker(company_url_list):
                                )
             if id_ == 1:
                 print(id_)
-                sql_update = 'UPDATE industry_main_info_url_list SET done=%s where company_url=%s '
+                sql_update = 'UPDATE industry_company_profile_simple SET done=%s where company_url=%s '
                 mysql.update(sql_update, (True, url))
         except Exception as e:
             print(traceback.format_exc())
@@ -644,12 +705,14 @@ def patch_company_profile_worker(company_url_list):
 
 def patch_company_profile():
     """
+    patch_company_profile_process
     打补丁，有些因为字符数过长导致没有成功插入到数据库
     :return:
     """
     init_industry_mysql()
-    sql = "select id,company_url from industry_main_info_url_list where done =0;"
+    sql = "select id,company_url,stock_code,stock_name,datetime from industry_company_profile_simple where done = 0;"
     company_profile_url_list = mysql.getAll(sql)
+    print(len(company_profile_url_list))
     patch_company_profile_process(company_profile_url_list)
 
 
@@ -658,37 +721,37 @@ def get_company_profile_info_process():
     获取公司的简介信息,保存到数据库中
     :return:
     """
+    delt = 1721
+    for i in range(0, 10):
+        start = delt * i + 1
+        end = delt * (i + 1)
+        print((start, end))
+        p = Process(target=get_company_profile_detail_work, args=(start, end,))
+        p.start()
 
-    p1 = Process(target=get_company_profile_info_work, name='p1', args=(1, 120,))
-    p1.start()
-    p2 = Process(target=get_company_profile_info_work, name='p2', args=(121, 240,))
-    p2.start()
-    p3 = Process(target=get_company_profile_info_work, name='p3', args=(241, 360,))
-    p3.start()
-    p4 = Process(target=get_company_profile_info_work, name='p4', args=(361, 480,))
-    p4.start()
-    p5 = Process(target=get_company_profile_info_work, name='p5', args=(481, 600,))
-    p5.start()
-    p6 = Process(target=get_company_profile_info_work, name='p6', args=(601, 720,))
-    p6.start()
-    p7 = Process(target=get_company_profile_info_work, name='p7', args=(721, 840,))
-    p7.start()
-    p8 = Process(target=get_company_profile_info_work, name='p8', args=(841, 960,))
-    p8.start()
-    p9 = Process(target=get_company_profile_info_work, name='p9', args=(961, 1080,))
-    p9.start()
-    p10 = Process(target=get_company_profile_info_work, name='p10', args=(1081, 1174,))
-    p10.start()
+
+def sync_stock_code():
+    init_industry_mysql()
+    sql = 'select id,stock_code,name_cn from industry_company_profile_detail where length(stock_code)<6'
+    res_old = mysql.getAll(sql)
+    print('len_old', str(len(res_old)))
+    for item_old in res_old:
+        print('item_old', item_old)
+        sql = "select id,stock_code,company_name from industry_company_profile_simple  where company_name = %s"
+        res_new = mysql.getAll(sql, item_old['name_cn'])
+        print('res_new', res_new)
+        sql = 'update industry_company_profile_detail set stock_code = %s where stock_name = %s'
+        # mysql.update(sql, res_new['stock_code'], item_old['stock_name'])
 
 
 if __name__ == "__main__":
     # init_industry_mysql()
     # init_selenium_util()
-    update_industry_catg_url()
+    # update_industry_catg_url()
     # get_industry_catg_objs()
-    # test_process()
     # process_get_categories_contains_all_com_url()
     # update_whole_companies_info_stock_code(1, 47005)
-    # process_get_company_url_list()
-    # get_company_profile_info_process()
-    patch_company_profile()
+    get_company_url_list_process()
+    get_company_profile_info_process()
+    # patch_company_profile()
+    # sync_stock_code()
