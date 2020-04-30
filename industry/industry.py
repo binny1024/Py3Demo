@@ -476,7 +476,7 @@ def get_company_profile_url_list_worker(start_page_num, end_page_num):
                                      item['datetime']
                                      ))
             if id_ != 1:
-                print(url)
+                print('error',url)
         if start_page_num == end_page_num:
             break
         start_page_num = start_page_num + 1
