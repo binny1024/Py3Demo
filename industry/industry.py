@@ -339,8 +339,8 @@ def parse_company_item_list(tr_list):
         # 获取 主营业务
         main_bussiness = td_main_bussiness.text
         item['main_business'] = main_bussiness
+        print(item)
         company_item_list.append(item)
-    print(company_item_list)
     return company_item_list
 
 
@@ -464,9 +464,7 @@ def get_company_profile_url_list_worker(start_page_num, end_page_num):
         print(url)
         selenium_util.get(url)
         tr_list = selenium_util.find_all_elements_by_xpath('//*[@id="ResultUl"]/tr')
-        # for url in url_list:
-        #     print(url)
-
+        print('解析 列表')
         items = parse_company_item_list(tr_list)
         for item in items:
             print(item)
