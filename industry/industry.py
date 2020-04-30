@@ -339,7 +339,6 @@ def parse_company_item_list(tr_list):
         # 获取 主营业务
         main_bussiness = td_main_bussiness.text
         item['main_business'] = main_bussiness
-        print(item)
         company_item_list.append(item)
     return company_item_list
 
@@ -461,13 +460,14 @@ def get_company_profile_url_list_worker(start_page_num, end_page_num):
     init_industry_mysql()
     while True:
         url = "https://s.askci.com/stock/0-0-0/" + str(start_page_num) + "/"
-        print(url)
+        # print(url)
         selenium_util.get(url)
         tr_list = selenium_util.find_all_elements_by_xpath('//*[@id="ResultUl"]/tr')
-        print('解析 列表')
+        # print('解析 列表')
         items = parse_company_item_list(tr_list)
+        print(items)
         for item in items:
-            print(item)
+            # print(item)
             sql = 'INSERT INTO industry_company_profile_simple (company_url, stock_code, stock_name, company_name, company_type,' \
                   ' main_business, datetime) VALUES(%s,%s,%s,%s,%s,%s,%s)'
             id_ = mysql.insert(sql, (item['company_url'], item['stock_code'], item['stock_name'], item['company_name'],
@@ -475,7 +475,8 @@ def get_company_profile_url_list_worker(start_page_num, end_page_num):
                                      item['main_business'],
                                      item['datetime']
                                      ))
-            print(id_)
+            if id_ == 1:
+                print(url)
         if start_page_num == end_page_num:
             break
         start_page_num = start_page_num + 1
