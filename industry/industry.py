@@ -340,6 +340,7 @@ def parse_company_item_list(tr_list):
         main_bussiness = td_main_bussiness.text
         item['main_business'] = main_bussiness
         company_item_list.append(item)
+    print(company_item_list)
     return company_item_list
 
 
@@ -467,7 +468,6 @@ def get_company_profile_url_list_worker(start_page_num, end_page_num):
         #     print(url)
 
         items = parse_company_item_list(tr_list)
-        print(items)
         for item in items:
             print(item)
             sql = 'INSERT INTO industry_company_profile_simple (company_url, stock_code, stock_name, company_name, company_type,' \
