@@ -65,6 +65,8 @@ class SeleniumUtil:
     def set_chrome_forbidden_image(self):
         # 禁止加载图片
         self.__options.add_argument('blink-settings=imagesEnabled=false')
+        self.__options.add_argument('--disable-gpu')
+        self.__options.add_argument('--no-sandbox')
         # 不加载图片和css
         self.__prefs["profile.managed_default_content_settings.images"] = 2
         self.__prefs['permissions.default.stylesheet'] = 2

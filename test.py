@@ -42,10 +42,12 @@ def log(s, p, res):
     print('| 结果: name = ' + str(type(res)))
     print('|=========================================')
 
+import sys
 
 if __name__ == '__main__':
-    s = '平安银行（000001）'
-    p = r'.*(\(.*\))'
-    r = re.search(p, s)
-
-    log(s, p, r)
+    # s = '平安银行（000001）'
+    # p = r'.*(\(.*\))'
+    # r = re.search(p, s)
+    #
+    # log(s, p, r)
+    print(sys.platform)
