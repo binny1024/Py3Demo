@@ -460,7 +460,7 @@ def get_company_profile_url_list_worker(start_page_num, end_page_num):
     init_industry_mysql()
     while True:
         url = "https://s.askci.com/stock/0-0-0/" + str(start_page_num) + "/"
-        # print(url)
+        print(url)
         selenium_util.get(url)
         tr_list = selenium_util.find_all_elements_by_xpath('//*[@id="ResultUl"]/tr')
         # print('解析 列表')
@@ -476,7 +476,7 @@ def get_company_profile_url_list_worker(start_page_num, end_page_num):
                                      item['datetime']
                                      ))
             if id_ != 1:
-                print('error',url)
+                print('error', url)
         if start_page_num == end_page_num:
             break
         start_page_num = start_page_num + 1
