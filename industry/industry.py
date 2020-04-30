@@ -468,16 +468,16 @@ def get_company_profile_url_list_worker(start_page_num, end_page_num):
 
         items = parse_company_item_list(tr_list)
         print(items)
-        # for item in items:
-        #     print(item)
-        #     sql = 'INSERT INTO industry_company_profile_simple (company_url, stock_code, stock_name, company_name, company_type,' \
-        #           ' main_business, datetime) VALUES(%s,%s,%s,%s,%s,%s,%s)'
-        #     id_ = mysql.insert(sql, (item['company_url'], item['stock_code'], item['stock_name'], item['company_name'],
-        #                              item['company_type'],
-        #                              item['main_business'],
-        #                              item['datetime']
-        #                              ))
-        #     print(id_)
+        for item in items:
+            print(item)
+            sql = 'INSERT INTO industry_company_profile_simple (company_url, stock_code, stock_name, company_name, company_type,' \
+                  ' main_business, datetime) VALUES(%s,%s,%s,%s,%s,%s,%s)'
+            id_ = mysql.insert(sql, (item['company_url'], item['stock_code'], item['stock_name'], item['company_name'],
+                                     item['company_type'],
+                                     item['main_business'],
+                                     item['datetime']
+                                     ))
+            print(id_)
         if start_page_num == end_page_num:
             break
         start_page_num = start_page_num + 1
