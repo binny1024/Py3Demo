@@ -2,6 +2,8 @@ import traceback
 import sys
 import os
 
+from selenium.common.exceptions import TimeoutException
+
 curPath = os.path.abspath(os.path.dirname(__file__))
 rootPath = os.path.split(curPath)[0]
 sys.path.append(rootPath)
@@ -297,49 +299,55 @@ def parse_current_company_profile_url_list(tr_list):
     return a_href_list
 
 
-def parse_company_item_list(tr_list):
+def parse_company_item_list(url, tr_list):
     # 遍历上市公司列表
     company_item_list = []
     for tr in tr_list:
-        item = {}
-        # print(tr.text)
-        # /html/body/div[3]/div[2]/div[1]/div/div[1]/div[2]/table/tbody/tr[1]/td[2]/a
-        # 获取子元素 //*[@id="ResultUl"]/tr[7]/td[5]
-        td_stock_code = selenium_util.find_one_child_element_by_xpath(tr, './/td[2]')
-        # 获取 stock_code
-        stock_code = td_stock_code.text
-        item['stock_code'] = stock_code
+        try:
+            item = {}
+            # print(tr.text)
+            # /html/body/div[3]/div[2]/div[1]/div/div[1]/div[2]/table/tbody/tr[1]/td[2]/a
+            # 获取子元素 //*[@id="ResultUl"]/tr[7]/td[5]
+            td_stock_code = selenium_util.find_one_child_element_by_xpath(tr, './/td[2]')
+            # 获取 stock_code
+            stock_code = td_stock_code.text
+            item['stock_code'] = stock_code
 
-        # 获取 company_url
-        a = selenium_util.find_one_child_element_by_xpath(tr, './/td[2]/a')
-        company_url = a.get_attribute('href')
-        item['company_url'] = company_url
+            # 获取 company_url
+            a = selenium_util.find_one_child_element_by_xpath(tr, './/td[2]/a')
+            company_url = a.get_attribute('href')
+            item['company_url'] = company_url
 
-        # 获取 stock_name
-        td_stock_name = selenium_util.find_one_child_element_by_xpath(tr, './/td[3]')
-        stock_name = td_stock_name.text
-        item['stock_name'] = stock_name
+            # 获取 stock_name
+            td_stock_name = selenium_util.find_one_child_element_by_xpath(tr, './/td[3]')
+            stock_name = td_stock_name.text
+            item['stock_name'] = stock_name
 
-        # 获取 company_name
-        td_company_name = selenium_util.find_one_child_element_by_xpath(tr, './/td[4]')
-        company_name = td_company_name.text
-        item['company_name'] = company_name
+            # 获取 company_name
+            td_company_name = selenium_util.find_one_child_element_by_xpath(tr, './/td[4]')
+            company_name = td_company_name.text
+            item['company_name'] = company_name
 
-        # 获取 datetime
-        td_datetime = selenium_util.find_one_child_element_by_xpath(tr, './/td[5]')
-        datetime = td_datetime.text
-        item['datetime'] = datetime
+            # 获取 datetime
+            td_datetime = selenium_util.find_one_child_element_by_xpath(tr, './/td[5]')
+            datetime = td_datetime.text
+            item['datetime'] = datetime
 
-        td_company_type = selenium_util.find_one_child_element_by_xpath(tr, './/td[8]')
-        # 获取 行业分类
-        company_type = td_company_type.text
-        item['company_type'] = company_type
+            td_company_type = selenium_util.find_one_child_element_by_xpath(tr, './/td[8]')
+            # 获取 行业分类
+            company_type = td_company_type.text
+            item['company_type'] = company_type
 
-        td_main_bussiness = selenium_util.find_one_child_element_by_xpath(tr, './/td[9]')
-        # 获取 主营业务
-        main_bussiness = td_main_bussiness.text
-        item['main_business'] = main_bussiness
-        company_item_list.append(item)
+            td_main_bussiness = selenium_util.find_one_child_element_by_xpath(tr, './/td[9]')
+            # 获取 主营业务
+            main_bussiness = td_main_bussiness.text
+            item['main_business'] = main_bussiness
+            company_item_list.append(item)
+        except TimeoutException or Exception as e:
+            sql = 'INSERT INTO collect_url_error (url) VALUES(%s)'
+            id_ = mysql.insert(sql, url)
+            print('error：' + url)
+            return None
     return company_item_list
 
 
@@ -464,7 +472,9 @@ def get_company_profile_url_list_worker(start_page_num, end_page_num):
         selenium_util.get(url)
         tr_list = selenium_util.find_all_elements_by_xpath('//*[@id="ResultUl"]/tr')
         # print('解析 列表')
-        items = parse_company_item_list(tr_list)
+        items = parse_company_item_list(url, tr_list)
+        if items is None:
+            continue
         # print(items)
         for item in items:
             # print(item)
