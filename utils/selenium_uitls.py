@@ -42,7 +42,7 @@ class SeleniumUtil:
 
         self.__options.add_argument('disable-infobars')
         self.__options.add_experimental_option('prefs', self.__prefs)
-        self.__driver = webdriver.Chrome(r'../driver/chromedriver81',options=self.__options)
+        self.__driver = webdriver.Chrome(r'../driver/chromedriver81', options=self.__options)
         self.waiting_time = 20
 
     def set_window_size_max(self):
@@ -338,6 +338,9 @@ class SeleniumUtil:
 
     def close(self):
         self.__driver.close()
+
+    def quit(self):
+        self.__driver.quit()
 
     def click_by_id(self, element_id):
         self.__driver.find_element_by_id(element_id).click()

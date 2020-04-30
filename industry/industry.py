@@ -393,7 +393,7 @@ def worker_insert_com_url(index1, index2):
                                       industry_catg_obj.stock_type))
             print(id_)
     # print("done")
-    selenium_util.close()
+    selenium_util.quit()
 
 
 def process_get_categories_contains_all_com_url():
@@ -460,26 +460,24 @@ def get_company_profile_url_list_worker(start_page_num, end_page_num):
         tr_list = selenium_util.find_all_elements_by_xpath('//*[@id="ResultUl"]/tr')
         # for url in url_list:
         #     print(url)
-        #     # sql = 'INSERT INTO industry_main_info_url_list (company_url) VALUES(%s)'
-        #     # id_ = mysql.insert(sql, url)
-        #     # print(id_)
+
         items = parse_company_item_list(tr_list)
         print(items)
-        # for item in items:
-        #     print(item)
-        #     sql = 'INSERT INTO industry_company_profile_simple (company_url, stock_code, stock_name, company_name, company_type,' \
-        #           ' main_business, datetime) VALUES(%s,%s,%s,%s,%s,%s,%s)'
-        #     id_ = mysql.insert(sql, (item['company_url'], item['stock_code'], item['stock_name'], item['company_name'],
-        #                              item['company_type'],
-        #                              item['main_business'],
-        #                              item['datetime']
-        #                              ))
-        #     print(id_)
+        for item in items:
+            print(item)
+            sql = 'INSERT INTO industry_company_profile_simple (company_url, stock_code, stock_name, company_name, company_type,' \
+                  ' main_business, datetime) VALUES(%s,%s,%s,%s,%s,%s,%s)'
+            id_ = mysql.insert(sql, (item['company_url'], item['stock_code'], item['stock_name'], item['company_name'],
+                                     item['company_type'],
+                                     item['main_business'],
+                                     item['datetime']
+                                     ))
+            print(id_)
         if start_page_num == end_page_num:
             break
         start_page_num = start_page_num + 1
     print("done")
-    selenium_util.close()
+    selenium_util.quit()
 
 
 def get_company_url_list_process():
@@ -607,7 +605,7 @@ def get_company_profile_detail_work(index1, index2):
         index1) + " and " + str(index2) + ";"
     company_info_list = mysql.getAll(sql)
     get_company_profile_detail(company_info_list)
-    selenium_util.close()
+    selenium_util.quit()
 
 
 def patch_company_profile_process(company_url_list):
@@ -700,7 +698,7 @@ def patch_company_profile_worker(company_url_list):
         except Exception as e:
             print(traceback.format_exc())
             continue
-    selenium_util.close()
+    selenium_util.quit()
 
 
 def patch_company_profile():
@@ -752,6 +750,6 @@ if __name__ == "__main__":
     # process_get_categories_contains_all_com_url()
     # update_whole_companies_info_stock_code(1, 47005)
     get_company_url_list_process()
-    get_company_profile_info_process()
+    # get_company_profile_info_process()
     # patch_company_profile()
     # sync_stock_code()
