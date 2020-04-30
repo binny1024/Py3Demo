@@ -2,6 +2,7 @@
 # @Time : 2020/1/7 10:41
 # @Author : xubinbin
 import os
+import sys
 import time
 
 from selenium.webdriver.support.wait import WebDriverWait
@@ -39,7 +40,8 @@ class SeleniumUtil:
             # 设置为 0 禁止弹出窗口
             self.__prefs['profile.default_content_settings.popups'] = 0
             self.__prefs['download.default_directory'] = download_path
-
+        if sys.platform == 'linux':
+            self.__options.binary_location = '/usr/bin/google-chrome'
         self.__options.add_argument('disable-infobars')
         self.__options.add_experimental_option('prefs', self.__prefs)
         self.__driver = webdriver.Chrome(r'../driver/chromedriver81', options=self.__options)
