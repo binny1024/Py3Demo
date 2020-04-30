@@ -1,8 +1,13 @@
 import traceback
+import sys
+import os
+
+curPath = os.path.abspath(os.path.dirname(__file__))
+rootPath = os.path.split(curPath)[0]
+sys.path.append(rootPath)
 
 from dbmysql.MySqlConn import MyPymysqlPool
 from utils.selenium_uitls import SeleniumUtil
-import re
 from multiprocessing import Process
 
 """
@@ -463,16 +468,16 @@ def get_company_profile_url_list_worker(start_page_num, end_page_num):
 
         items = parse_company_item_list(tr_list)
         print(items)
-        for item in items:
-            print(item)
-            sql = 'INSERT INTO industry_company_profile_simple (company_url, stock_code, stock_name, company_name, company_type,' \
-                  ' main_business, datetime) VALUES(%s,%s,%s,%s,%s,%s,%s)'
-            id_ = mysql.insert(sql, (item['company_url'], item['stock_code'], item['stock_name'], item['company_name'],
-                                     item['company_type'],
-                                     item['main_business'],
-                                     item['datetime']
-                                     ))
-            print(id_)
+        # for item in items:
+        #     print(item)
+        #     sql = 'INSERT INTO industry_company_profile_simple (company_url, stock_code, stock_name, company_name, company_type,' \
+        #           ' main_business, datetime) VALUES(%s,%s,%s,%s,%s,%s,%s)'
+        #     id_ = mysql.insert(sql, (item['company_url'], item['stock_code'], item['stock_name'], item['company_name'],
+        #                              item['company_type'],
+        #                              item['main_business'],
+        #                              item['datetime']
+        #                              ))
+        #     print(id_)
         if start_page_num == end_page_num:
             break
         start_page_num = start_page_num + 1
@@ -492,29 +497,6 @@ def get_company_url_list_process():
         print((start, end))
         p = Process(target=get_company_profile_url_list_worker, args=(start, end,))
         p.start()
-
-    # p1 = Process(target=get_company_profile_url_list_worker, name='p1', args=(1, 100,))  # 必须加,号
-    # p1.start()
-    # p2 = Process(target=get_company_profile_url_list_worker, name='p2', args=(101, 200,))
-    # p2.start()
-    # p3 = Process(target=get_company_profile_url_list_worker, name='p3', args=(201, 300,))
-    # p3.start()
-    # p4 = Process(target=get_company_profile_url_list_worker, name='p4', args=(301, 400,))
-    # p4.start()
-    # p5 = Process(target=get_company_profile_url_list_worker, name='p5', args=(401, 500,))
-    # p5.start()
-    # p6 = Process(target=get_company_profile_url_list_worker, name='p6', args=(501, 574,))
-    # p6.start()
-    # p7 = Process(target=worker_get_company_profile_url_list, name='p7', args=(301, 350,))
-    # p7.start()
-    # p8 = Process(target=worker_get_company_profile_url_list, name='p8', args=(351, 400,))
-    # p8.start()
-    # p9 = Process(target=worker_get_company_profile_url_list, name='p9', args=(401, 450,))
-    # p9.start()
-    # p10 = Process(target=worker_get_company_profile_url_list, name='p10', args=(451, 500,))
-    # p10.start()
-    # p11 = Process(target=worker_get_company_profile_url_list, name='p11', args=(501, 574,))
-    # p11.start()
 
 
 def get_company_profile_detail(company_info_list):
