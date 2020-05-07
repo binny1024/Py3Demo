@@ -611,15 +611,15 @@ def patch_company_profile_process(company_url_list):
     for company_profile in company_url_list:
         print(company_profile)
 
-    # delt = len(company_url_list) // 10 + 1
-    # for i in range(0, 10):
-    #     start = delt * i + 1
-    #     end = delt * (i + 1)
-    #     print((start, end))
-    #     p = Process(target=patch_company_profile_work, args=(company_url_list[start:end],))
-    #     p.start()
-    p = Process(target=patch_company_profile_work, args=(company_url_list,))
-    p.start()
+    delt = len(company_url_list) // 10 + 1
+    for i in range(0, 10):
+        start = delt * i + 1
+        end = delt * (i + 1)
+        print((start, end))
+        p = Process(target=patch_company_profile_work, args=(company_url_list[start:end],))
+        p.start()
+    # p = Process(target=patch_company_profile_work, args=(company_url_list,))
+    # p.start()
 
 
 def patch_company_profile_work(company_url_list):
