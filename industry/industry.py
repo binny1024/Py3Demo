@@ -582,6 +582,7 @@ def get_company_profile_detail(company_info_list):
             sql_update = 'UPDATE industry_company_profile_simple SET done=%s where company_url=%s '
             mysql.update(sql_update, (True, url))
     mysql.commit()
+    selenium_util.quit()
 
 
 def get_company_profile_detail_work(index1, index2):
@@ -608,18 +609,24 @@ def patch_company_profile_process(company_url_list):
     :param company_url_list:
     :return:
     """
+    if len(company_url_list) == 0:
+        return
+
+    if len(company_url_list) < 10:
+        print(company_url_list)
+        p = Process(target=patch_company_profile_work, args=(company_url_list,))
+        p.start()
+        return
     for company_profile in company_url_list:
         print(company_profile)
-
-    delt = len(company_url_list) // 10 + 1
-    for i in range(0, 10):
-        start = delt * i + 1
-        end = delt * (i + 1)
+    count_process = 10
+    delta = len(company_url_list) // 10 + 1
+    for i in range(0, count_process):
+        start = delta * i + 1
+        end = delta * (i + 1)
         print((start, end))
         p = Process(target=patch_company_profile_work, args=(company_url_list[start:end],))
         p.start()
-    # p = Process(target=patch_company_profile_work, args=(company_url_list,))
-    # p.start()
 
 
 def patch_company_profile_work(company_url_list):
@@ -744,5 +751,5 @@ if __name__ == "__main__":
     # update_whole_companies_info_stock_code(1, 47005)
     get_company_url_list_process()
     # get_company_profile_info_process()
-    # patch_company_profile()
+    patch_company_profile()
     # sync_stock_code()
