@@ -38,10 +38,13 @@ json_str = """
 #     print(json_map[i])
 
 
-s = [('yellow', 1, 'r'), ('blue', 2,'r'), ('yellow', 3,'r'), ('blue', 4,'r'), ('red', 1,'r')]
-d = collections.defaultdict(list)
-for k, v, r in s:
-    print(r)
+# s = [('yellow', 1, 'r'), ('blue', 2,'r'), ('yellow', 3,'r'), ('blue', 4,'r'), ('red', 1,'r')]
+# d = collections.defaultdict(list)
+# for k, v, r in s:
+#     print(r)
     # d[k].append(v)
 # a = sorted(d.items())
 # print(a)
+gps = {}
+print('len',len(gps))
+
